@@ -1,0 +1,157 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Host an Event | Wiwi Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-container {
+        max-width: 650px;
+        margin: 2rem auto;
+    }
+    
+    .form-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-glass);
+        padding-bottom: 1rem;
+    }
+    
+    .form-title {
+        font-size: 2.2rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .form-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-top: 0.3rem;
+    }
+    
+    .notice-box {
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        color: #f59e0b;
+        font-size: 0.9rem;
+        display: flex;
+        gap: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .notice-box i {
+        margin-top: 0.2rem;
+        font-size: 1.1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="glass-card">
+        <div class="form-header">
+            <h2 class="form-title">Host an Event</h2>
+            <p class="form-subtitle">Create a new tech gathering, panel discussion, or coding bootcamp.</p>
+        </div>
+        
+        <div class="notice-box">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>
+                <strong>Verification Required:</strong> To maintain community quality, all newly created events must be reviewed and approved by administrators before they appear on the public board.
+            </div>
+        </div>
+        
+        <form method="POST" action="{% url 'create_event' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title" class="form-label">Event Title</label>
+                <input type="text" name="title" id="title" class="form-control" placeholder="e.g. AI & Full-Stack Tech Summit 2026" value="{{ title|default:'' }}" required autofocus>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="category" class="form-label">Event Category</label>
+                    <select name="category" id="category" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                        {% for val, label in categories %}
+                            <option value="{{ val }}" {% if category_val == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="event_type" class="form-label">Venue Format</label>
+                    <select name="event_type" id="event_type" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                        {% for val, label in event_types %}
+                            <option value="{{ val }}" {% if event_type_val == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" rows="4" class="form-control" placeholder="Provide a detailed description of topics, agendas, and key takeaways..." required>{{ description|default:'' }}</textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="speaker_name" class="form-label">Keynote Speaker (Optional)</label>
+                    <input type="text" name="speaker_name" id="speaker_name" class="form-control" placeholder="e.g. Dr. Sarah Jenkins" value="{{ speaker_name|default:'' }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="speaker_role" class="form-label">Speaker Title / Organization</label>
+                    <input type="text" name="speaker_role" id="speaker_role" class="form-control" placeholder="e.g. Head of AI Research at TechCorp" value="{{ speaker_role|default:'' }}">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="location" class="form-label">Location / Platform Link</label>
+                    <input type="text" name="location" id="location" class="form-control" placeholder="e.g. Convention Center or Zoom" value="{{ location|default:'' }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="capacity" class="form-label">Maximum Capacity</label>
+                    <input type="number" name="capacity" id="capacity" min="1" max="100000" class="form-control" placeholder="e.g. 100" value="{{ capacity|default:'' }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="date" class="form-label">Event Date &amp; Time</label>
+                <input type="datetime-local" name="date" id="date" class="form-control" value="{{ date_val|default:'' }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image" class="form-label">
+                    <i class="fa-solid fa-image" style="color: var(--accent-violet);"></i>
+                    Event Banner Image <span style="color: var(--text-muted); font-weight: 400;">(optional)</span>
+                </label>
+                <input type="file" name="image" id="image" accept="image/*" class="form-control"
+                    style="padding: 0.6rem; cursor: pointer;">
+                <small style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.3rem; display: block;">
+                    JPG, PNG, WEBP — recommended 1200×630 px. Leave blank for a gradient placeholder.
+                </small>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="margin-top: 1rem; width: 100%;">
+                <i class="fa-solid fa-calendar-plus"></i> Submit Event for Review
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.getElementById('date');
+        if (dateInput) {
+            // Set min attribute to current local ISO time
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            dateInput.min = now.toISOString().slice(0, 16);
+        }
+    });
+</script>
+{% endblock %}

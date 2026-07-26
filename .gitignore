@@ -1,0 +1,13 @@
+# Environment & Database secrets
+.env
+db.sqlite3
+
+# Python bytecode & virtual environment
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+
+# User-uploaded media files
+media/

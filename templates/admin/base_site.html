@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | Wiwi Events Admin{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<!-- Google Fonts: Outfit + Inter -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{# Load our custom CSS AFTER Django's own admin CSS so it overrides it cleanly #}
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name">
+    <a href="{% url 'admin:index' %}">
+        <i class="fa-solid fa-sparkles"></i> Wiwi Events Admin
+    </a>
+</div>
+{% endblock %}
+
+{% block nav-global %}
+<div style="margin-left: auto; padding-right: 1.5rem;">
+    <a href="{% url 'event_list' %}" style="
+        background: rgba(255,255,255,0.05);
+        color: var(--accent-cyan);
+        border: 1px solid var(--border-glass);
+        padding: 0.45rem 1rem;
+        border-radius: 8px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    ">
+        <i class="fa-solid fa-globe"></i> View Main Site
+    </a>
+</div>
+{% endblock %}

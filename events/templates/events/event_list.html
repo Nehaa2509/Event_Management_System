@@ -1,0 +1,541 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Explore Events | Wiwi Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    .events-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(217, 70, 239, 0.12) 100%);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 3rem 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: var(--card-shadow);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-title {
+        font-size: 3rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.6rem;
+    }
+    
+    .hero-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.15rem;
+        max-width: 650px;
+        margin: 0 auto 2rem auto;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .stat-card {
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid var(--border-glass);
+        border-radius: 12px;
+        padding: 1rem;
+        text-align: center;
+        backdrop-filter: blur(8px);
+    }
+
+    .stat-val {
+        font-size: 1.8rem;
+        font-weight: 800;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-lbl {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.2rem;
+    }
+
+    /* Filter Pills */
+    .filter-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .pill-link {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--text-secondary);
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--border-glass);
+        transition: all 0.3s ease;
+    }
+
+    .pill-link:hover, .pill-link.active {
+        color: white;
+        background: rgba(99, 102, 241, 0.2);
+        border-color: #6366f1;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+    }
+    
+    /* Filters Sidebar */
+    .filter-sidebar {
+        position: sticky;
+        top: 90px;
+    }
+    
+    .sidebar-title {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--border-glass);
+        padding-bottom: 0.75rem;
+    }
+    
+    /* Event Grid */
+    .event-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .event-card {
+        background: var(--bg-card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border-glass);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        box-shadow: var(--card-shadow);
+    }
+    
+    .event-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(139, 92, 246, 0.4);
+        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
+    }
+    
+    .event-header {
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
+        padding: 1.5rem;
+        border-bottom: 1px solid var(--border-glass);
+    }
+
+    .badge-bar {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.8rem;
+    }
+    
+    .event-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    
+    .badge-approved {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .badge-category {
+        background: rgba(99, 102, 241, 0.15);
+        color: #8b5cf6;
+        border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+
+    .badge-virtual {
+        background: rgba(217, 70, 239, 0.15);
+        color: #d946ef;
+        border: 1px solid rgba(217, 70, 239, 0.3);
+    }
+    
+    .event-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1.3;
+    }
+    
+    .event-body {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        gap: 1rem;
+    }
+    
+    .event-desc {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        line-height: 1.5;
+        flex-grow: 1;
+    }
+
+    .speaker-box {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--border-glass);
+        border-radius: 10px;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .speaker-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--accent-gradient);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+    
+    .event-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border-glass);
+        padding-top: 1rem;
+    }
+    
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    
+    .meta-item i {
+        color: #8b5cf6;
+        width: 16px;
+    }
+    
+    .event-footer {
+        padding: 1.5rem;
+        border-top: 1px solid var(--border-glass);
+        background: rgba(255, 255, 255, 0.01);
+    }
+    
+    .capacity-bar-container {
+        width: 100%;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+    
+    .capacity-bar {
+        height: 100%;
+        background: var(--accent-gradient);
+        border-radius: 10px;
+        transition: width 0.5s ease;
+    }
+    
+    .capacity-text {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+    
+    .no-events {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+    
+    .no-events i {
+        font-size: 4rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1.5rem;
+    }
+    
+    .no-events h3 {
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .no-events p {
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 992px) {
+        .events-layout {
+            grid-template-columns: 1fr;
+        }
+        .filter-sidebar {
+            position: relative;
+            top: 0;
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1 class="hero-title">Discover Exceptional Events</h1>
+    <p class="hero-subtitle">Connect with industry leaders at premier tech summits, hands-on coding workshops, and virtual keynotes worldwide.</p>
+    
+    <!-- Hero Analytics Counter -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-val">{{ total_events }}</div>
+            <div class="stat-lbl">Active Events</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val">{{ total_attendees }}</div>
+            <div class="stat-lbl">Tickets Issued</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val">{{ virtual_count }}</div>
+            <div class="stat-lbl">Virtual / Online</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-val">{{ in_person_count }}</div>
+            <div class="stat-lbl">In-Person Gatherings</div>
+        </div>
+    </div>
+</div>
+
+<div class="events-layout">
+    <!-- Filters Sidebar -->
+    <div class="filter-sidebar glass-card">
+        <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Filter & Search</h3>
+        <form method="GET" action="{% url 'event_list' %}">
+            <div class="form-group">
+                <label for="q" class="form-label">Search Keyword</label>
+                <input type="text" name="q" id="q" class="form-control" placeholder="Title, speaker, topic..." value="{{ query }}">
+            </div>
+
+            <div class="form-group">
+                <label for="category" class="form-label">Category</label>
+                <select name="category" id="category" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
+                    <option value="">All Categories</option>
+                    {% for val, label in categories %}
+                        <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="event_type" class="form-label">Format</label>
+                <select name="event_type" id="event_type" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
+                    <option value="">All Formats</option>
+                    <option value="IN_PERSON" {% if event_type_filter == 'IN_PERSON' %}selected{% endif %}>In-Person</option>
+                    <option value="VIRTUAL" {% if event_type_filter == 'VIRTUAL' %}selected{% endif %}>Virtual</option>
+                    <option value="HYBRID" {% if event_type_filter == 'HYBRID' %}selected{% endif %}>Hybrid</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="location" class="form-label">Location</label>
+                <select name="location" id="location" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
+                    <option value="">All Locations</option>
+                    {% for loc in locations %}
+                        <option value="{{ loc }}" {% if location_filter == loc %}selected{% endif %}>{{ loc }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="date" class="form-label">Date</label>
+                <input type="date" name="date" id="date" class="form-control" value="{{ date_filter }}">
+            </div>
+            
+            <button type="submit" class="btn-primary" style="margin-bottom: 0.8rem; width: 100%;">
+                <i class="fa-solid fa-magnifying-glass"></i> Apply Filters
+            </button>
+            <a href="{% url 'event_list' %}" class="btn-secondary" style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                Reset Filters
+            </a>
+        </form>
+    </div>
+
+    <!-- Events Main Section -->
+    <div>
+        <!-- Category Quick Pills -->
+        <div class="filter-pills">
+            <a href="{% url 'event_list' %}" class="pill-link {% if not category_filter %}active{% endif %}">
+                <i class="fa-solid fa-layer-group"></i> All
+            </a>
+            {% for val, label in categories %}
+                <a href="{% url 'event_list' %}?category={{ val }}" class="pill-link {% if category_filter == val %}active{% endif %}">
+                    {{ label }}
+                </a>
+            {% endfor %}
+        </div>
+
+        {% if events %}
+            <div class="event-grid">
+                {% for event in events %}
+                    <div class="event-card">
+                        <!-- Banner image or gradient placeholder -->
+                        {% if event.image %}
+                            <div style="height: 160px; overflow: hidden; border-radius: 14px 14px 0 0;">
+                                <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
+                                    style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            </div>
+                        {% else %}
+                            <div style="height: 120px; background: linear-gradient(135deg, rgba(124,58,237,0.35) 0%, rgba(6,182,212,0.25) 50%, rgba(236,72,153,0.3) 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-calendar-star" style="font-size: 2.5rem; opacity: 0.4; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                            </div>
+                        {% endif %}
+
+                        <div class="event-header">
+                            <div class="badge-bar">
+                                <span class="event-badge badge-category">
+                                    <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
+                                </span>
+                                <span class="event-badge badge-virtual">
+                                    {% if event.event_type == 'VIRTUAL' %}
+                                        <i class="fa-solid fa-video"></i> Virtual
+                                    {% elif event.event_type == 'HYBRID' %}
+                                        <i class="fa-solid fa-network-wired"></i> Hybrid
+                                    {% else %}
+                                        <i class="fa-solid fa-building"></i> In-Person
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <h3 class="event-title">{{ event.title }}</h3>
+                        </div>
+                        
+                        <div class="event-body">
+                            <p class="event-desc">{{ event.description|truncatewords:18 }}</p>
+                            
+                            {% if event.speaker_name %}
+                                <div class="speaker-box">
+                                    <div class="speaker-avatar">
+                                        {{ event.speaker_name|slice:":1"|upper }}
+                                    </div>
+                                    <div>
+                                        <strong style="color: var(--text-primary);">{{ event.speaker_name }}</strong>
+                                        {% if event.speaker_role %}
+                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ event.speaker_role }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="event-meta">
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-calendar-day"></i>
+                                    <span>{{ event.date|date:"F j, Y, g:i a" }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <span>{{ event.location }}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    <span>Organizer: <strong style="text-transform: uppercase;">{{ event.organizer.username|upper }}</strong></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="event-footer">
+                            <div class="capacity-text">
+                                <span>Seats Reserved: <strong>{{ event.registrations.count }}</strong> / {{ event.capacity }}</span>
+                                {% if event.registrations.count >= event.capacity %}
+                                    <span style="color: var(--error); font-weight: 600;">FULL</span>
+                                {% else %}
+                                    <span>{{ event.slots_left }} left</span>
+                                {% endif %}
+                            </div>
+                            <div class="capacity-bar-container">
+                                <div class="capacity-bar" style="width: {% widthratio event.registrations.count event.capacity 100 %}%"></div>
+                            </div>
+                            
+                            <a href="{% url 'event_detail' event.pk %}" class="btn-primary" style="display: block; text-align: center; margin-top: 1.2rem; text-decoration: none;">
+                                View Event Pass & Register
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.has_other_pages %}
+                <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
+                            <i class="fa-solid fa-chevron-left"></i> Previous
+                        </a>
+                    {% endif %}
+
+                    {% for i in page_obj.paginator.page_range %}
+                        {% if page_obj.number == i %}
+                            <span class="btn-primary" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9rem;">{{ i }}</span>
+                        {% else %}
+                            <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
+                                {{ i }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
+                            Next <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="glass-card no-events">
+                <i class="fa-solid fa-calendar-xmark"></i>
+                <h3>No Events Matching Filters</h3>
+                <p>We couldn't find any approved events matching your selected category or criteria. Try resetting filters or hosting an event yourself!</p>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'create_event' %}" class="btn-create" style="display: inline-flex; justify-content: center;">
+                        <i class="fa-solid fa-plus"></i> Host Event
+                    </a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

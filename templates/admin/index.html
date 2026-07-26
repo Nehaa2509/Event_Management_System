@@ -1,0 +1,300 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+
+{# ── Moderation Panel ─────────────────────────────────────────────────────── #}
+<style>
+    /* Scoped styles for the moderation panel */
+    .mod-section {
+        margin-bottom: 2rem;
+    }
+
+    .mod-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.9rem 1.2rem;
+        font-size: 1rem;
+        font-weight: 700;
+        font-family: 'Outfit', sans-serif;
+        letter-spacing: 0.01em;
+    }
+
+    .mod-header.pending {
+        background: linear-gradient(90deg, rgba(245,158,11,0.2) 0%, transparent 100%) !important;
+        color: #f59e0b !important;
+        border-left: 3px solid #f59e0b !important;
+    }
+
+    .mod-header.approved {
+        background: linear-gradient(90deg, rgba(16,185,129,0.2) 0%, transparent 100%) !important;
+        color: #10b981 !important;
+        border-left: 3px solid #10b981 !important;
+    }
+
+    .mod-badge {
+        background: rgba(255,255,255,0.08);
+        border-radius: 20px;
+        padding: 0.15rem 0.6rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .mod-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .mod-table th {
+        background: rgba(255,255,255,0.04) !important;
+        color: #64748b !important;
+        font-size: 0.75rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.07em !important;
+        padding: 0.7rem 1rem !important;
+        font-weight: 600 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    }
+
+    .mod-table td {
+        padding: 0.8rem 1rem !important;
+        border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+        color: #f8fafc !important;
+        font-size: 0.9rem !important;
+        vertical-align: middle;
+    }
+
+    .mod-table tbody tr:hover {
+        background: rgba(124,58,237,0.08) !important;
+    }
+
+    .mod-empty {
+        padding: 2rem;
+        text-align: center;
+        color: #64748b;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+    }
+
+    .btn-approve-sm {
+        background: rgba(16,185,129,0.15);
+        color: #10b981;
+        border: 1px solid rgba(16,185,129,0.3);
+        padding: 0.3rem 0.75rem;
+        border-radius: 7px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .btn-approve-sm:hover {
+        background: #10b981;
+        color: #fff;
+    }
+
+    .btn-reject-sm {
+        background: rgba(244,63,94,0.12);
+        color: #f43f5e;
+        border: 1px solid rgba(244,63,94,0.25);
+        padding: 0.3rem 0.75rem;
+        border-radius: 7px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .btn-reject-sm:hover {
+        background: #f43f5e;
+        color: #fff;
+    }
+
+    .btn-delete-sm {
+        background: rgba(244,63,94,0.12);
+        color: #f43f5e;
+        border: 1px solid rgba(244,63,94,0.25);
+        padding: 0.3rem 0.75rem;
+        border-radius: 7px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+    }
+
+    .btn-delete-sm:hover {
+        background: #f43f5e;
+        color: #fff;
+    }
+
+    .event-title-link {
+        color: #06b6d4 !important;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .event-title-link:hover {
+        text-decoration: underline;
+    }
+
+    .actions-cell {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+    }
+</style>
+
+{# ── Intro strip ── #}
+<div style="
+    background: linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(6,182,212,0.08) 100%);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+">
+    <div>
+        <h2 style="font-family:'Outfit',sans-serif; font-size:1.55rem; font-weight:800; background:var(--accent-gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:0 0 0.2rem;">
+            Admin Moderation Panel
+        </h2>
+        <p style="color:#94a3b8; font-size:0.9rem; margin:0;">
+            Manage events, approve host submissions, and handle permissions.
+        </p>
+    </div>
+    <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:20px; padding:0.4rem 1rem; font-size:0.85rem; color:#94a3b8;">
+        Logged in as Staff: <strong style="color:#f59e0b; text-transform: uppercase;">{{ user.username|upper }}</strong>
+    </div>
+</div>
+
+{# ── Pending Events ── #}
+<div class="mod-section module">
+    <div class="mod-header pending">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        Pending Events Review
+        <span class="mod-badge">{{ pending_events.count }}</span>
+    </div>
+
+    {% if pending_events %}
+        <table class="mod-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Organizer</th>
+                    <th>Date &amp; Time</th>
+                    <th>Location</th>
+                    <th>Capacity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in pending_events %}
+                <tr>
+                    <td>
+                        <a href="{% url 'admin:events_event_change' event.pk %}" class="event-title-link">
+                            {{ event.title }}
+                        </a>
+                    </td>
+                    <td style="color:#94a3b8; text-transform: uppercase;">{{ event.organizer.username|upper }}</td>
+                    <td style="color:#94a3b8; font-size:0.85rem;">{{ event.date|date:"M d, Y, g:i a" }}</td>
+                    <td style="color:#94a3b8;">{{ event.location }}</td>
+                    <td style="color:#94a3b8;">{{ event.capacity }}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <form method="POST" action="{% url 'approve_event' event.id %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-approve-sm">
+                                    <i class="fa-solid fa-circle-check"></i> Approve
+                                </button>
+                            </form>
+                            <form method="POST" action="{% url 'reject_event' event.id %}" style="display:inline;"
+                                  onsubmit="return confirm('Reject and permanently delete this event submission?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-reject-sm">
+                                    <i class="fa-solid fa-circle-xmark"></i> Reject
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="mod-empty">
+            <i class="fa-solid fa-circle-check" style="color:#10b981;"></i>
+            No pending events waiting for approval.
+        </div>
+    {% endif %}
+</div>
+
+{# ── Approved Events ── #}
+<div class="mod-section module">
+    <div class="mod-header approved">
+        <i class="fa-solid fa-circle-check"></i>
+        Approved &amp; Active Events
+        <span class="mod-badge">{{ approved_events.count }}</span>
+    </div>
+
+    {% if approved_events %}
+        <table class="mod-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Organizer</th>
+                    <th>Date &amp; Time</th>
+                    <th>Location</th>
+                    <th>Registrations</th>
+                    <th>Capacity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in approved_events %}
+                <tr>
+                    <td>
+                        <a href="{% url 'admin:events_event_change' event.pk %}" class="event-title-link">
+                            {{ event.title }}
+                        </a>
+                    </td>
+                    <td style="color:#94a3b8; text-transform: uppercase;">{{ event.organizer.username|upper }}</td>
+                    <td style="color:#94a3b8; font-size:0.85rem;">{{ event.date|date:"M d, Y, g:i a" }}</td>
+                    <td style="color:#94a3b8;">{{ event.location }}</td>
+                    <td style="color:#10b981; font-weight:700;">{{ event.registrations.count }}</td>
+                    <td style="color:#94a3b8;">{{ event.capacity }}</td>
+                    <td>
+                        <a href="{% url 'admin:events_event_change' event.pk %}" class="btn-approve-sm">
+                            <i class="fa-solid fa-pen"></i> Edit
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="mod-empty">
+            <i class="fa-solid fa-calendar-minus"></i>
+            No approved events exist yet.
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

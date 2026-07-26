@@ -1,0 +1,72 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Register | Wiwi Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    .auth-container {
+        max-width: 480px;
+        margin: 3rem auto;
+    }
+    .auth-title {
+        font-size: 2.2rem;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .auth-subtitle {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+    }
+    .auth-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="glass-card">
+        <h2 class="auth-title">Create Account</h2>
+        <p class="auth-subtitle">Join Wiwi Events to explore and register for tech events</p>
+        
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" id="username" class="form-control" placeholder="Choose a username" required autofocus>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" name="password" id="password" class="form-control" placeholder="Create a strong password" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Repeat your password" required>
+            </div>
+            
+            <button type="submit" class="btn-primary">
+                <i class="fa-solid fa-user-plus"></i> Register
+            </button>
+        </form>
+        
+        <div class="auth-footer">
+            Already have an account? <a href="{% url 'login' %}" class="auth-link">Sign in</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

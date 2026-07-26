@@ -1,0 +1,445 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Ticket — {{ event.title }} | Wiwi Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* ── Screen layout ──────────────────────────────────────────────── */
+    .ticket-wrapper {
+        max-width: 540px;
+        margin: 3rem auto;
+    }
+
+    .ticket {
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Top gradient strip */
+    .ticket-header {
+        background: var(--accent-gradient);
+        padding: 1.8rem 2rem 1.4rem;
+        text-align: center;
+        position: relative;
+    }
+
+    .ticket-logo {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 1.3rem;
+        color: rgba(255, 255, 255, 0.85);
+        letter-spacing: 0.04em;
+        text-decoration: none;
+    }
+
+    .ticket-event-name {
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.7rem;
+        font-weight: 800;
+        color: #fff;
+        margin: 0.6rem 0 0;
+        line-height: 1.25;
+    }
+
+    /* Tear-off dashed divider */
+    .ticket-divider {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .ticket-divider::before,
+    .ticket-divider::after {
+        content: '';
+        display: block;
+        width: 28px;
+        height: 28px;
+        background: var(--bg-primary);
+        border-radius: 50%;
+        flex-shrink: 0;
+        margin: -14px;
+        z-index: 1;
+    }
+
+    .ticket-divider .dashed-line {
+        flex: 1;
+        border-top: 2px dashed rgba(255, 255, 255, 0.12);
+        margin: 0 4px;
+    }
+
+    /* Ticket body */
+    .ticket-body {
+        padding: 1.8rem 2rem;
+    }
+
+    .ticket-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.2rem 1.5rem;
+        margin-bottom: 1.8rem;
+    }
+
+    .ticket-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .ticket-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .ticket-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .ticket-code-value {
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        letter-spacing: 0.1em;
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.2);
+        padding: 0.5rem 0.8rem;
+        border-radius: 8px;
+        display: inline-block;
+    }
+
+    /* QR section */
+    .ticket-qr-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.8rem;
+        border-top: 1px solid var(--border-glass);
+        padding-top: 1.5rem;
+        margin-top: 0.5rem;
+    }
+
+    .ticket-qr-label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .qr-img {
+        border-radius: 12px;
+        border: 2px solid rgba(124, 58, 237, 0.4);
+        padding: 6px;
+        background: #060913;
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+        width: 180px;
+        height: 180px;
+    }
+
+    .ticket-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 50px;
+        padding: 0.35rem 1rem;
+        font-size: 0.82rem;
+        font-weight: 600;
+    }
+
+    /* Action buttons */
+    .ticket-actions {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+    }
+
+    /* ── Print styles ───────────────────────────────────────────────── */
+    @media print {
+        @page {
+            size: landscape;
+            margin: 10mm;
+        }
+
+        /* Hide all site chrome & action buttons */
+        nav, footer, .ticket-actions, .messages-container, a.ticket-actions {
+            display: none !important;
+        }
+
+        body {
+            background: #fff !important;
+            color: #000 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .ticket-wrapper {
+            margin: 0 auto !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+
+        .ticket {
+            border: 2px solid #333 !important;
+            border-radius: 16px !important;
+            box-shadow: none !important;
+            backdrop-filter: none !important;
+            background: #fff !important;
+            overflow: hidden !important;
+            page-break-inside: avoid !important;
+        }
+
+        .ticket-header {
+            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%) !important;
+            color: #fff !important;
+            padding: 1.2rem 2rem !important;
+            text-align: left !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            border-bottom: 2px dashed #cbd5e1 !important;
+        }
+
+        .ticket-header .ticket-logo {
+            color: #fff !important;
+            font-size: 1.1rem !important;
+        }
+
+        .ticket-header .ticket-event-name {
+            color: #fff !important;
+            font-size: 1.4rem !important;
+            margin: 0 !important;
+        }
+
+        /* Hide horizontal divider in print layout */
+        .ticket-divider {
+            display: none !important;
+        }
+
+        /* Ticket body becomes 2 columns: 70% left info, 30% right QR stub */
+        .ticket-body {
+            display: flex !important;
+            flex-direction: row !important;
+            padding: 0 !important;
+            position: relative !important;
+        }
+
+        .ticket-grid {
+            flex: 1 1 70% !important;
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0.8rem 1.2rem !important;
+            padding: 1.4rem 2rem !important;
+            margin-bottom: 0 !important;
+            border-right: 2px dashed #94a3b8 !important;
+            position: relative !important;
+        }
+
+        /* Circle notches for vertical tear line on right stub border */
+        .ticket-grid::before,
+        .ticket-grid::after {
+            content: '' !important;
+            display: block !important;
+            width: 24px !important;
+            height: 24px !important;
+            background: #fff !important;
+            border: 2px solid #333 !important;
+            border-radius: 50% !important;
+            position: absolute !important;
+            right: -13px !important;
+            z-index: 5 !important;
+        }
+
+        .ticket-grid::before {
+            top: -13px !important;
+        }
+
+        .ticket-grid::after {
+            bottom: -13px !important;
+        }
+
+        .ticket-field {
+            gap: 0.15rem !important;
+        }
+
+        .ticket-label {
+            color: #475569 !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+        }
+
+        .ticket-value {
+            color: #0f172a !important;
+            font-size: 0.95rem !important;
+            font-weight: 600 !important;
+        }
+
+        .ticket-value span {
+            color: #475569 !important;
+        }
+
+        .ticket-code-value {
+            color: #0284c7 !important;
+            border: 1px solid #0284c7 !important;
+            background: #f0f9ff !important;
+            font-size: 1.1rem !important;
+            padding: 0.35rem 0.7rem !important;
+        }
+
+        .ticket-status-badge {
+            background: #d1fae5 !important;
+            color: #059669 !important;
+            border: 1px solid #10b981 !important;
+            padding: 0.25rem 0.75rem !important;
+        }
+
+        /* Right QR Stub section */
+        .ticket-qr-section {
+            flex: 0 0 30% !important;
+            width: 30% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 1.4rem 1rem !important;
+            margin-top: 0 !important;
+            border-top: none !important;
+            background: #f8fafc !important;
+            gap: 0.6rem !important;
+        }
+
+        .ticket-qr-label {
+            color: #475569 !important;
+            font-size: 0.72rem !important;
+        }
+
+        .qr-img {
+            width: 140px !important;
+            height: 140px !important;
+            border: 2px solid #7c3aed !important;
+            box-shadow: none !important;
+            background: #fff !important;
+            padding: 4px !important;
+        }
+
+        .ticket-qr-section small {
+            color: #64748b !important;
+            font-size: 0.75rem !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ticket-wrapper">
+
+    <!-- Back link (hidden on print) -->
+    <a href="{% url 'user_dashboard' %}" class="btn-secondary ticket-actions" style="display: inline-flex; margin-bottom: 1rem; text-decoration: none;">
+        <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <div class="ticket">
+
+        <!-- ── Header gradient strip ── -->
+        <div class="ticket-header">
+            <div class="ticket-logo"><i class="fa-solid fa-sparkles"></i> Wiwi Events</div>
+            <h1 class="ticket-event-name">{{ event.title }}</h1>
+        </div>
+
+        <!-- ── Tear-off divider ── -->
+        <div class="ticket-divider">
+            <div class="dashed-line"></div>
+        </div>
+
+        <!-- ── Ticket body ── -->
+        <div class="ticket-body">
+
+            <div class="ticket-grid">
+                <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-user"></i> Attendee</span>
+                    <span class="ticket-value" style="text-transform: uppercase;">{{ registration.user.get_full_name|default:registration.user.username|upper }}</span>
+                </div>
+
+                <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-calendar"></i> Date &amp; Time</span>
+                    <span class="ticket-value">{{ event.date|date:"N j, Y" }}<br>
+                        <span style="font-weight: 400; font-size: 0.9rem; color: var(--text-secondary);">{{ event.date|date:"g:i a" }}</span>
+                    </span>
+                </div>
+
+                <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-location-dot"></i> Location</span>
+                    <span class="ticket-value">{{ event.location }}</span>
+                </div>
+
+                <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-tag"></i> Category</span>
+                    <span class="ticket-value">{{ event.get_category_display }}</span>
+                </div>
+
+                <div class="ticket-field" style="grid-column: 1 / -1;">
+                    <span class="ticket-label"><i class="fa-solid fa-barcode"></i> Ticket Code</span>
+                    <span class="ticket-code-value">{{ registration.ticket_code }}</span>
+                </div>
+
+                <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-clock"></i> Registered On</span>
+                    <span class="ticket-value" style="font-size: 0.9rem;">{{ registration.registered_at|date:"N j, Y, g:i a" }}</span>
+                </div>
+
+                <div class="ticket-field">
+                    <span class="ticket-label">Status</span>
+                    <span class="ticket-status-badge">
+                        <i class="fa-solid fa-circle-check"></i> Confirmed
+                    </span>
+                </div>
+            </div>
+
+            <!-- ── QR Code ── -->
+            <div class="ticket-qr-section">
+                <span class="ticket-qr-label"><i class="fa-solid fa-qrcode"></i> Scan to verify</span>
+                {% if qr_code_b64 %}
+                    <img src="data:image/png;base64,{{ qr_code_b64 }}"
+                         alt="QR code for ticket {{ registration.ticket_code }}"
+                         class="qr-img">
+                {% else %}
+                    <div class="qr-img" style="display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-muted);text-align:center;padding:1rem;">
+                        QR code unavailable — use ticket code above
+                    </div>
+                {% endif %}
+                <small style="color: var(--text-muted); font-size: 0.8rem; text-align: center;">
+                    Present this QR code at the event entrance
+                </small>
+            </div>
+
+        </div><!-- /ticket-body -->
+
+    </div><!-- /ticket -->
+
+    <!-- Action buttons (hidden on print) -->
+    <div class="ticket-actions" style="margin-top: 1.2rem;">
+        <button onclick="window.print()" class="btn-primary" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-print"></i> Print / Save as PDF
+        </button>
+        <a href="{% url 'event_detail' event.id %}" class="btn-secondary" style="text-decoration: none;">
+            <i class="fa-solid fa-calendar-days"></i> View Event
+        </a>
+    </div>
+
+</div>
+{% endblock %}

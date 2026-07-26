@@ -1,0 +1,131 @@
+{% extends 'events/base.html' %}
+
+{% block title %}Edit {{ event.title }} | Wiwi Events{% endblock %}
+
+{% block extra_head %}
+<style>
+    .form-container {
+        max-width: 650px;
+        margin: 2rem auto;
+    }
+    
+    .form-header {
+        margin-bottom: 2rem;
+        border-bottom: 1px solid var(--border-glass);
+        padding-bottom: 1rem;
+    }
+    
+    .form-title {
+        font-size: 2.2rem;
+        background: var(--accent-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .form-subtitle {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-top: 0.3rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="glass-card">
+        <div class="form-header">
+            <h2 class="form-title">Edit Event Details</h2>
+            <p class="form-subtitle">Update your event schedule, location, or description.</p>
+        </div>
+        
+        <form method="POST" action="{% url 'edit_event' event.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title" class="form-label">Event Title</label>
+                <input type="text" name="title" id="title" class="form-control" value="{{ event.title }}" required autofocus>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="category" class="form-label">Event Category</label>
+                    <select name="category" id="category" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                        {% for val, label in categories %}
+                            <option value="{{ val }}" {% if event.category == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="event_type" class="form-label">Venue Format</label>
+                    <select name="event_type" id="event_type" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                        {% for val, label in event_types %}
+                            <option value="{{ val }}" {% if event.event_type == val %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" id="description" rows="4" class="form-control" required>{{ event.description }}</textarea>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="speaker_name" class="form-label">Keynote Speaker</label>
+                    <input type="text" name="speaker_name" id="speaker_name" class="form-control" value="{{ event.speaker_name }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="speaker_role" class="form-label">Speaker Title / Organization</label>
+                    <input type="text" name="speaker_role" id="speaker_role" class="form-control" value="{{ event.speaker_role }}">
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="location" class="form-label">Location / Platform</label>
+                    <input type="text" name="location" id="location" class="form-control" value="{{ event.location }}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="capacity" class="form-label">Maximum Capacity</label>
+                    <input type="number" name="capacity" id="capacity" min="1" class="form-control" value="{{ event.capacity }}" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="date" class="form-label">Event Date & Time</label>
+                <input type="datetime-local" name="date" id="date" class="form-control" value="{{ formatted_date }}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="image" class="form-label">
+                    <i class="fa-solid fa-image" style="color: var(--accent-violet);"></i>
+                    Event Banner Image <span style="color: var(--text-muted); font-weight: 400;">(optional)</span>
+                </label>
+                {% if event.image %}
+                    <div style="margin-bottom: 0.6rem;">
+                        <img src="{{ event.image.url }}" alt="Current banner"
+                            style="max-height: 140px; border-radius: 10px; border: 1px solid var(--border-glass); object-fit: cover;">
+                        <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.3rem;">
+                            Current banner — upload a new file to replace it.
+                        </p>
+                    </div>
+                {% endif %}
+                <input type="file" name="image" id="image" accept="image/*" class="form-control"
+                    style="padding: 0.6rem; cursor: pointer;">
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" class="btn-primary" style="flex: 1;">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Changes
+                </button>
+                <a href="{% url 'event_detail' event.id %}" class="btn-secondary" style="padding: 0.8rem 1.5rem; text-decoration: none;">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
