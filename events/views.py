@@ -479,34 +479,41 @@ def view_ticket(request, registration_id):
     if registration.user != request.user and not request.user.is_staff:
         raise PermissionDenied("You are not allowed to view this ticket.")
 
-    qr_b64 = None
-    try:
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_H,
-            box_size=8,
-            border=3,
-        )
-        qr.add_data(registration.ticket_code)
-        qr.make(fit=True)
-        qr_img = qr.make_image(
-            fill_color='#db2777',
-            back_color='#060913',
-            image_factory=PilImage
-        )
+    tickets_data = []
+    for i in range(1, registration.quantity + 1):
+        sub_code = f"{registration.ticket_code}-{i}" if registration.quantity > 1 else registration.ticket_code
+        qr_b64 = None
+        try:
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=8,
+                border=3,
+            )
+            qr.add_data(sub_code)
+            qr.make(fit=True)
+            qr_img = qr.make_image(
+                fill_color='#db2777',
+                back_color='#060913',
+                image_factory=PilImage
+            )
 
-        buffer = io.BytesIO()
-        qr_img.save(buffer, format='PNG')
-        qr_b64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-        logger.info(f"Generated ticket QR code base64 length: {len(qr_b64)}")
-        print(f"[TICKET QR] Generated base64 length: {len(qr_b64)}")
-    except Exception as e:
-        logger.error(f"Error generating QR code for ticket {registration.ticket_code}: {e}", exc_info=True)
-        print(f"[TICKET QR ERROR] Failed to generate QR code: {e}")
+            buffer = io.BytesIO()
+            qr_img.save(buffer, format='PNG')
+            qr_b64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        except Exception as e:
+            logger.error(f"Error generating QR code for ticket {sub_code}: {e}", exc_info=True)
+            print(f"[TICKET QR ERROR] Failed to generate QR code: {e}")
+        
+        tickets_data.append({
+            'code': sub_code,
+            'qr_b64': qr_b64,
+            'index': i
+        })
 
     context = {
         'registration': registration,
         'event': registration.event,
-        'qr_code_b64': qr_b64,
+        'tickets_data': tickets_data,
     }
     return render(request, 'events/ticket.html', context)
