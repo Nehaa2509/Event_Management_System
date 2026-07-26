@@ -266,8 +266,7 @@
                     {{ event.speaker_name|slice:":1"|upper }}
                 </div>
                 <div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name
-                        }}</h3>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name }}</h3>
                     {% if event.speaker_role %}
                     <p style="color: var(--text-secondary); font-size: 0.9rem;">{{ event.speaker_role }}</p>
                     {% endif %}
@@ -308,8 +307,7 @@
                     <span
                         style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Pass
                         Holder</span>
-                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{
-                        request.user.username|upper }}</strong>
+                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{ request.user.username|upper }}</strong>
                 </div>
             </div>
             {% if registration %}
@@ -374,10 +372,8 @@
                             <td
                                 style="padding: 0.8rem 1rem; color: var(--text-primary); font-weight: 600; text-transform: uppercase;">
                                 {{ att.user.username|upper }}</td>
-                            <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code
-                                }}</td>
-                            <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M
-                                d, Y, g:i a" }}</td>
+                            <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code }}</td>
+                            <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M d, Y, g:i a" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -451,12 +447,10 @@
 
                 <div
                     style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left
-                            }}</strong></span>
+                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left }}</strong></span>
                     {% if user.is_authenticated and user_tickets > 0 %}
                     <span id="user-held-tag"
-                        style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets
-                        }}/5</span>
+                        style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets }}/5</span>
                     {% endif %}
                 </div>
 
