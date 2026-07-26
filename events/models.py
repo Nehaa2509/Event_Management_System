@@ -74,3 +74,14 @@ class Registration(models.Model):
     def __str__(self):
         return f"{self.user.username} ({self.ticket_code}) - {self.quantity} ticket(s) for {self.event.title}"
 
+class ContactInquiry(models.Model):
+    name = models.CharField(max_length=150)
+    email = models.EmailField()
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name_plural = "Contact Inquiries"
+
+    def __str__(self):
+        return f"Inquiry from {self.name} ({self.email})"

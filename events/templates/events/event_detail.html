@@ -251,7 +251,37 @@
         {% endif %}
 
         <h1 class="event-detail-title">{{ event.title }}</h1>
-        <p class="event-detail-desc">{{ event.description }}</p>
+        <div class="event-detail-desc-container" style="position: relative;">
+            {% if event.description|length > 150 %}
+                <p class="event-detail-desc" id="desc-short">{{ event.description|truncatechars:150 }}</p>
+                <p class="event-detail-desc" id="desc-full" style="display: none;">{{ event.description|linebreaksbr }}</p>
+                <button type="button" id="desc-toggle-btn" style="background: transparent; border: none; color: var(--accent-blue); font-weight: 600; font-size: 0.95rem; cursor: pointer; padding: 0; margin-top: 0.5rem; display: inline-flex; align-items: center; gap: 0.3rem;">
+                    Show more <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <script>
+                    (function() {
+                        const btn = document.getElementById('desc-toggle-btn');
+                        const short = document.getElementById('desc-short');
+                        const full = document.getElementById('desc-full');
+                        if(btn) {
+                            btn.addEventListener('click', function() {
+                                if(full.style.display === 'none') {
+                                    full.style.display = 'block';
+                                    short.style.display = 'none';
+                                    btn.innerHTML = 'Show less <i class="fa-solid fa-chevron-up"></i>';
+                                } else {
+                                    full.style.display = 'none';
+                                    short.style.display = 'block';
+                                    btn.innerHTML = 'Show more <i class="fa-solid fa-chevron-down"></i>';
+                                }
+                            });
+                        }
+                    })();
+                </script>
+            {% else %}
+                <p class="event-detail-desc">{{ event.description|linebreaksbr }}</p>
+            {% endif %}
+        </div>
 
         {% if event.speaker_name %}
         <div
@@ -266,8 +296,7 @@
                     {{ event.speaker_name|slice:":1"|upper }}
                 </div>
                 <div>
-                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name
-                        }}</h3>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name }}</h3>
                     {% if event.speaker_role %}
                     <p style="color: var(--text-secondary); font-size: 0.9rem;">{{ event.speaker_role }}</p>
                     {% endif %}
@@ -308,8 +337,7 @@
                     <span
                         style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Pass
                         Holder</span>
-                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{
-                        request.user.username|upper }}</strong>
+                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{ request.user.username|upper }}</strong>
                 </div>
             </div>
             {% if registration %}
@@ -374,10 +402,8 @@
                             <td
                                 style="padding: 0.8rem 1rem; color: var(--text-primary); font-weight: 600; text-transform: uppercase;">
                                 {{ att.user.username|upper }}</td>
-                            <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code
-                                }}</td>
-                            <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M
-                                d, Y, g:i a" }}</td>
+                            <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code }}</td>
+                            <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M d, Y, g:i a" }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -451,12 +477,10 @@
 
                 <div
                     style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left
-                            }}</strong></span>
+                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left }}</strong></span>
                     {% if user.is_authenticated and user_tickets > 0 %}
                     <span id="user-held-tag"
-                        style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets
-                        }}/5</span>
+                        style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets }}/5</span>
                     {% endif %}
                 </div>
 
@@ -464,7 +488,7 @@
                 <button class="btn-action btn-full" disabled>
                     <i class="fa-solid fa-ban"></i> Event Pending Approval
                 </button>
-                {% elif slots_left <= 0 and user_tickets <=0 %} <button id="reg-btn" class="btn-action btn-full"
+                {% elif slots_left <= 0 and user_tickets <= 0 %} <button id="reg-btn" class="btn-action btn-full"
                     disabled>
                     <i class="fa-solid fa-circle-xmark"></i> Fully Booked!
                     </button>

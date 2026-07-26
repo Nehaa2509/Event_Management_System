@@ -8,8 +8,8 @@ from django.core.paginator import Paginator
 from django.db import transaction, IntegrityError, OperationalError
 from django.http import JsonResponse
 from django.contrib import messages
-from django.db.models import Q
-from .models import Event, Registration
+from django.db.models import Q, Sum, Count
+from .models import Event, Registration, ContactInquiry
 from .services import register_user_for_event, RegistrationError
 from django.utils import timezone
 import logging
@@ -96,6 +96,19 @@ def logout_user(request):
     messages.info(request, "You have been logged out.")
     return redirect('login')
 
+def search_suggestions(request):
+    q = request.GET.get('q', '').strip()
+    if len(q) < 2:
+        return JsonResponse({'suggestions': []})
+    
+    events = (Event.objects.filter(is_approved=True, title__icontains=q)
+              .values_list('title', flat=True)[:5])
+              
+    categories = [c[1] for c in Event.CATEGORY_CHOICES if q.lower() in c[1].lower()]
+    
+    # Return unique combinations, ensuring it's serializable
+    return JsonResponse({'suggestions': list(events) + categories})
+
 def event_list(request):
     query = request.GET.get('q', '').strip()
     location_filter = request.GET.get('location', '').strip()
@@ -145,6 +158,45 @@ def event_list(request):
     locations = all_approved.values_list('location', flat=True).distinct()
     categories = Event.CATEGORY_CHOICES
     
+    # New stats for counter band
+    total_submitted_events = Event.objects.count()
+    approval_rate = int((total_events / total_submitted_events) * 100) if total_submitted_events > 0 else 0
+    total_tickets_issued = Registration.objects.aggregate(total=Sum('quantity'))['total'] or 0
+    categories_offered = all_approved.values('category').distinct().count()
+
+    # Gallery events
+    gallery_events = Event.objects.filter(is_approved=True, image__isnull=False).exclude(image='').order_by('-created_at')[:8]
+    
+    # --- SMART / DATA-DRIVEN FEATURES ---
+    # 1. Trending Events
+    trending_events = list(
+        all_approved.filter(date__gte=timezone.now())
+        .annotate(reg_count=Count('registrations'))
+        .order_by('-reg_count', '-created_at')[:6]
+    )
+    if not trending_events or max((e.reg_count for e in trending_events), default=0) == 0:
+        trending_events = all_approved.filter(date__gte=timezone.now()).order_by('date')[:6]
+
+    # 2. Live Insights
+    events_today_count = all_approved.filter(date__date=timezone.now().date()).count()
+    
+    current_month_start = timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    most_active_cat_data = (
+        all_approved.filter(created_at__gte=current_month_start)
+        .values('category')
+        .annotate(cat_count=Count('id'))
+        .order_by('-cat_count')
+        .first()
+    )
+    most_active_category = dict(Event.CATEGORY_CHOICES).get(most_active_cat_data['category']) if most_active_cat_data else None
+
+    upcoming_20 = list(all_approved.filter(date__gte=timezone.now()).order_by('date')[:20])
+    fewest_slots_event = min(
+        [e for e in upcoming_20 if e.slots_left > 0], 
+        key=lambda e: e.slots_left, 
+        default=None
+    )
+
     context = {
         'events': page_obj,
         'page_obj': page_obj,
@@ -155,12 +207,20 @@ def event_list(request):
         'event_type_filter': event_type_filter,
         'locations': locations,
         'categories': categories,
+        'next_event': next_event,
         'total_events': total_events,
         'total_attendees': total_attendees,
         'virtual_count': virtual_count,
         'in_person_count': in_person_count,
         'active_organizers': active_organizers,
-        'next_event': next_event,
+        'total_tickets_issued': total_tickets_issued,
+        'categories_offered': categories_offered,
+        'approval_rate': approval_rate,
+        'gallery_events': gallery_events,
+        'trending_events': trending_events,
+        'events_today_count': events_today_count,
+        'most_active_category': most_active_category,
+        'fewest_slots_event': fewest_slots_event,
     }
     return render(request, 'events/event_list.html', context)
 
@@ -479,34 +539,55 @@ def view_ticket(request, registration_id):
     if registration.user != request.user and not request.user.is_staff:
         raise PermissionDenied("You are not allowed to view this ticket.")
 
-    qr_b64 = None
-    try:
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_H,
-            box_size=8,
-            border=3,
-        )
-        qr.add_data(registration.ticket_code)
-        qr.make(fit=True)
-        qr_img = qr.make_image(
-            fill_color='#db2777',
-            back_color='#060913',
-            image_factory=PilImage
-        )
+    tickets_data = []
+    for i in range(1, registration.quantity + 1):
+        sub_code = f"{registration.ticket_code}-{i}" if registration.quantity > 1 else registration.ticket_code
+        qr_b64 = None
+        try:
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
+                box_size=8,
+                border=3,
+            )
+            qr.add_data(sub_code)
+            qr.make(fit=True)
+            qr_img = qr.make_image(
+                fill_color='#db2777',
+                back_color='#060913',
+                image_factory=PilImage
+            )
 
-        buffer = io.BytesIO()
-        qr_img.save(buffer, format='PNG')
-        qr_b64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
-        logger.info(f"Generated ticket QR code base64 length: {len(qr_b64)}")
-        print(f"[TICKET QR] Generated base64 length: {len(qr_b64)}")
-    except Exception as e:
-        logger.error(f"Error generating QR code for ticket {registration.ticket_code}: {e}", exc_info=True)
-        print(f"[TICKET QR ERROR] Failed to generate QR code: {e}")
+            buffer = io.BytesIO()
+            qr_img.save(buffer, format='PNG')
+            qr_b64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+        except Exception as e:
+            logger.error(f"Error generating QR code for ticket {sub_code}: {e}", exc_info=True)
+            print(f"[TICKET QR ERROR] Failed to generate QR code: {e}")
+        
+        tickets_data.append({
+            'code': sub_code,
+            'qr_b64': qr_b64,
+            'index': i
+        })
 
     context = {
         'registration': registration,
         'event': registration.event,
-        'qr_code_b64': qr_b64,
+        'tickets_data': tickets_data,
     }
     return render(request, 'events/ticket.html', context)
+
+def contact_inquiry(request):
+    if request.method == 'POST':
+        name = request.POST.get('name', '').strip()
+        email = request.POST.get('email', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if name and email and message:
+            ContactInquiry.objects.create(name=name, email=email, message=message)
+            messages.success(request, "Thanks for your inquiry! We'll get back to you soon.")
+        else:
+            messages.error(request, "Please fill in all fields.")
+
+    return redirect('event_list')

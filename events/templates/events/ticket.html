@@ -203,9 +203,21 @@
             print-color-adjust: exact !important;
         }
 
+        .ticket {
+            page-break-after: always;
+            break-after: page;
+            margin-bottom: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .ticket:last-of-type {
+            page-break-after: auto;
+            break-after: auto;
+        }
+
         .ticket-wrapper {
-            margin: 0 auto !important;
-            max-width: 100% !important;
+            margin: 0 !important;
+            max-width: none !important;
             width: 100% !important;
         }
 
@@ -372,7 +384,8 @@
         <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
     </a>
 
-    <div class="ticket">
+    {% for t in tickets_data %}
+    <div class="ticket" style="margin-bottom: 2rem; border: 1px solid var(--border-glass);">
 
         <!-- ── Header gradient strip ── -->
         <div class="ticket-header">
@@ -413,7 +426,7 @@
 
                 <div class="ticket-field" style="grid-column: 1 / -1;">
                     <span class="ticket-label"><i class="fa-solid fa-barcode"></i> Ticket Code</span>
-                    <span class="ticket-code-value">{{ registration.ticket_code }}</span>
+                    <span class="ticket-code-value">{{ t.code }}</span>
                 </div>
 
                 <div class="ticket-field">
@@ -437,9 +450,9 @@
             <!-- ── QR Code ── -->
             <div class="ticket-qr-section">
                 <span class="ticket-qr-label"><i class="fa-solid fa-qrcode"></i> Scan to verify</span>
-                {% if qr_code_b64 %}
-                    <img src="data:image/png;base64,{{ qr_code_b64 }}"
-                         alt="QR code for ticket {{ registration.ticket_code }}"
+                {% if t.qr_b64 %}
+                    <img src="data:image/png;base64,{{ t.qr_b64 }}"
+                         alt="QR code for ticket {{ t.code }}"
                          class="qr-img">
                 {% else %}
                     <div class="qr-img" style="display:flex;align-items:center;justify-content:center;font-size:0.8rem;color:var(--text-muted);text-align:center;padding:1rem;">
@@ -454,6 +467,7 @@
         </div><!-- /ticket-body -->
 
     </div><!-- /ticket -->
+    {% endfor %}
 
     <!-- Action buttons (hidden on print) -->
     <div class="ticket-actions" style="margin-top: 1.2rem;">

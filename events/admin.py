@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.contrib.auth.models import User, Group
 from django.utils.html import format_html
 from .admin_site import wiwi_admin_site
-from .models import Event, Registration
+from .models import Event, Registration, ContactInquiry
 
 # ---------------------------------------------------------------------------
 # Admin site global branding (also applied to default site as fallback)
@@ -139,3 +139,11 @@ try:
     admin.site.register(Registration, RegistrationAdmin)
 except admin.sites.AlreadyRegistered:
     pass
+
+@admin.register(ContactInquiry)
+class ContactInquiryAdmin(ModelAdmin):
+    list_display = ('name', 'email', 'created_at')
+    readonly_fields = ('name', 'email', 'message', 'created_at')
+    ordering = ('-created_at',)
+
+wiwi_admin_site.register(ContactInquiry, ContactInquiryAdmin)

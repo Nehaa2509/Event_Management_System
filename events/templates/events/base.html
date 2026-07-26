@@ -384,15 +384,25 @@
 
         /* ── Multi-column SaaS Footer ── */
         .site-footer {
-            background: #f1f5f9;
-            border-top: 1px solid var(--border-glass);
+            background: linear-gradient(135deg, rgba(15,23,42,1) 0%, rgba(37,99,235,1) 100%);
+            border-top: none;
             margin-top: 0;
+            color: rgba(255,255,255,0.8);
         }
 
         .footer-inner {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 3.5rem 2rem 2rem;
+            padding: 4rem 2rem 2rem;
+        }
+
+        .footer-cta {
+            margin-bottom: 4rem;
+            padding-bottom: 4rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-cols {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 3rem;
@@ -402,7 +412,7 @@
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
             font-size: 1.4rem;
-            color: var(--text-primary);
+            color: #ffffff;
             margin-bottom: 0.75rem;
             display: flex;
             align-items: center;
@@ -410,7 +420,7 @@
         }
 
         .footer-tagline {
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.7);
             font-size: 0.93rem;
             line-height: 1.6;
             max-width: 300px;
@@ -422,7 +432,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--text-muted);
+            color: #ffffff;
             margin-bottom: 1rem;
         }
 
@@ -439,12 +449,12 @@
             display: flex;
             align-items: center;
             gap: 0.55rem;
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
         }
 
         .footer-links a {
-            color: var(--text-secondary);
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -453,30 +463,94 @@
         }
 
         .footer-links a:hover {
-            color: #4f46e5;
+            color: #ffffff;
         }
 
         .footer-links i {
             width: 14px;
-            color: var(--text-muted);
+            color: rgba(255,255,255,0.5);
             font-size: 0.8rem;
         }
 
         .footer-bottom {
-            border-top: 1px solid var(--border-glass);
+            border-top: 1px solid rgba(255,255,255,0.1);
             text-align: center;
             padding: 1.2rem 2rem;
-            color: var(--text-muted);
+            color: rgba(255,255,255,0.5);
             font-size: 0.85rem;
         }
 
         @media (max-width: 768px) {
-            .footer-inner {
+            .footer-cols {
                 grid-template-columns: 1fr;
                 gap: 2rem;
-                padding: 2rem 1.5rem;
+            }
+            .footer-inner {
+                padding: 3rem 1.5rem;
             }
         }
+        
+        /* Toast Notification System */
+        #toast-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            width: 320px;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            transform: translateX(120%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: auto;
+        }
+        .toast.show {
+            transform: translateX(0);
+        }
+        .toast-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+        .toast-content {
+            flex-grow: 1;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+        .toast-close:hover {
+            color: var(--text-primary);
+        }
+        .toast-success { border-left: 4px solid var(--success); }
+        .toast-success .toast-icon { color: var(--success); }
+        .toast-error { border-left: 4px solid var(--error); }
+        .toast-error .toast-icon { color: var(--error); }
+        .toast-info { border-left: 4px solid var(--accent-cyan); }
+        .toast-info .toast-icon { color: var(--accent-cyan); }
+        .toast-warning { border-left: 4px solid var(--warning); }
+        .toast-warning .toast-icon { color: var(--warning); }
+
     </style>
     {% block extra_head %}{% endblock %}
 </head>
@@ -519,21 +593,18 @@
     {% block full_bleed_content %}{% endblock %}
 
     <div class="container">
+        <!-- Toast Container -->
+        <div id="toast-container"></div>
+        
+        <!-- Pass Django Messages to JS Toast System -->
         {% if messages %}
-            <div class="messages-container">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}">
-                        {% if message.tags == 'success' %}
-                            <i class="fa-solid fa-circle-check"></i>
-                        {% elif message.tags == 'error' %}
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                        {% else %}
-                            <i class="fa-solid fa-circle-info"></i>
-                        {% endif %}
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    {% for message in messages %}
+                        showToast("{{ message|escapejs }}", "{{ message.tags }}");
+                    {% endfor %}
+                });
+            </script>
         {% endif %}
 
         {% block content %}{% endblock %}
@@ -541,32 +612,36 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <div class="footer-col footer-brand">
-                <div class="footer-logo">
-                    <i class="fa-solid fa-sparkles" style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                    Wiwi Events
+
+
+            <div class="footer-cols">
+                <div class="footer-col footer-brand">
+                    <div class="footer-logo">
+                        <i class="fa-solid fa-sparkles"></i>
+                        Wiwi Events
+                    </div>
+                    <p class="footer-tagline">Registration, ticketing, and approvals — all in one place, for every kind of event.</p>
                 </div>
-                <p class="footer-tagline">Registration, ticketing, and approvals — all in one place, for every kind of event.</p>
-            </div>
-            <div class="footer-col">
-                <h4 class="footer-heading">Quick Links</h4>
-                <ul class="footer-links">
-                    <li><a href="{% url 'event_list' %}"><i class="fa-solid fa-calendar-days"></i> Browse Events</a></li>
-                    <li><a href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
-                    <li><a href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
-                    {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'create_event' %}"><i class="fa-solid fa-plus"></i> Host an Event</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4 class="footer-heading">Built With</h4>
-                <ul class="footer-links">
-                    <li><i class="fa-brands fa-python"></i> Django 6 + Python 3.13</li>
-                    <li><i class="fa-solid fa-database"></i> SQLite (dev) / PostgreSQL (prod)</li>
-                    <li><i class="fa-solid fa-plug"></i> Django REST Framework</li>
-                    <li><i class="fa-solid fa-lock"></i> WhiteNoise static serving</li>
-                </ul>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="{% url 'event_list' %}"><i class="fa-solid fa-calendar-days"></i> Browse Events</a></li>
+                        <li><a href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                        <li><a href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
+                        {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'create_event' %}"><i class="fa-solid fa-plus"></i> Host an Event</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4 class="footer-heading">Built With</h4>
+                    <ul class="footer-links">
+                        <li><i class="fa-brands fa-python"></i> Django 6 + Python 3.13</li>
+                        <li><i class="fa-solid fa-database"></i> SQLite (dev) / PostgreSQL (prod)</li>
+                        <li><i class="fa-solid fa-plug"></i> Django REST Framework</li>
+                        <li><i class="fa-solid fa-lock"></i> WhiteNoise static serving</li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="footer-bottom">
@@ -574,6 +649,37 @@
         </div>
     </footer>
     
+    <script>
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            let iconClass = 'fa-circle-info';
+            if (type === 'success') iconClass = 'fa-circle-check';
+            else if (type === 'error') iconClass = 'fa-circle-exclamation';
+            else if (type === 'warning') iconClass = 'fa-triangle-exclamation';
+
+            toast.innerHTML = `
+                <div class="toast-icon"><i class="fa-solid ${iconClass}"></i></div>
+                <div class="toast-content">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+            `;
+
+            container.appendChild(toast);
+            
+            // Trigger reflow and show
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            // Auto dismiss
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => { if(toast.parentElement) toast.remove(); }, 300);
+            }, 4000);
+        }
+    </script>
     {% block extra_scripts %}{% endblock %}
 </body>
 </html>

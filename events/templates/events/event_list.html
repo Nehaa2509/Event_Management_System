@@ -56,12 +56,36 @@
    1. HERO
 ═══════════════════════════════════════════════════════════ */
 .hero-wrap {
-    background:
-        linear-gradient(135deg, rgba(79,70,229,0.92) 0%, rgba(37,99,235,0.82) 100%),
-        url("{% static 'images/hero-bg.webp' %}") center center / cover no-repeat;
-    background-blend-mode: multiply, normal;
     position: relative;
     overflow: hidden;
+    background: #0f172a;
+}
+.hero-slider-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+}
+.hero-slider-bg.active {
+    opacity: 1;
+}
+.hero-slider-dots {
+    position: absolute;
+    bottom: 90px;
+    left: 0; right: 0;
+    z-index: 3;
+    display: flex; justify-content: center; gap: 0.6rem;
+}
+.slider-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    transition: all 0.3s ease;
+}
+.slider-dot.active {
+    background: #ffffff;
+    width: 24px;
+    border-radius: 999px;
 }
 .hero-wrap::after {
     content: '';
@@ -78,10 +102,12 @@
     z-index: 2;
 }
 .hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 740px;
+    margin: 0;
 }
 .hero-pill {
     display: inline-flex;
@@ -116,7 +142,7 @@
     font-size: 1.08rem;
     color: rgba(255,255,255,0.82);
     line-height: 1.7;
-    max-width: 480px;
+    max-width: 560px;
     margin-bottom: 2.2rem;
 }
 .hero-cta-row {
@@ -510,8 +536,6 @@
 ═══════════════════════════════════════════════════════════ */
 @media (max-width: 1024px) {
     .features-grid { grid-template-columns: repeat(2, 1fr); }
-    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
-    .hero-mockup-side { display: none; }
     .stats-inner { grid-template-columns: repeat(2, 1fr); }
     .stat-item { border-right: none; border-bottom: 1px solid #e2e8f0; }
     .stat-item:last-child, .stat-item:nth-child(2) { border-bottom: none; }
@@ -524,6 +548,85 @@
     .events-layout { grid-template-columns: 1fr; }
     .filter-sidebar { position: relative; top: 0; }
     .stats-inner { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   7. STATS BAND
+═══════════════════════════════════════════════════════════ */
+.stats-band {
+    background: var(--bg-secondary);
+    padding: 5rem 0;
+    border-top: 1px solid var(--border-glass);
+    border-bottom: 1px solid var(--border-glass);
+}
+.stats-band-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    text-align: center;
+}
+.sb-num {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: 3.2rem;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+.sb-label {
+    font-size: 0.95rem; font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   8. EVENTS GALLERY
+═══════════════════════════════════════════════════════════ */
+.gallery-section { background: var(--bg-primary); padding: 5rem 0; }
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+.gallery-item {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #e2e8f0;
+    display: block;
+}
+.gallery-img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.gallery-item:hover .gallery-img { transform: scale(1.05); }
+.gallery-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, transparent 100%);
+    padding: 2rem 1.2rem 1.2rem;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.gallery-item:hover .gallery-overlay { opacity: 1; }
+.gallery-title { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.1rem; margin-bottom: 0.3rem; color: #fff; }
+
+/* ═══════════════════════════════════════════════════════════
+   9. CONTACT INQUIRY
+═══════════════════════════════════════════════════════════ */
+.contact-section { background: #ffffff; border-top: 1px solid var(--border-glass); }
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem; align-items: center;
+}
+@media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+.contact-form {
+    background: #f8fafc;
+    border: 1px solid var(--border-glass);
+    border-radius: 16px;
+    padding: 2.5rem;
 }
 
 /* Override base container for full-bleed landing page layout */
@@ -541,6 +644,17 @@ body > div.container {
      1. HERO
 ───────────────────────────────────────────────────────── -->
 <div class="hero-wrap">
+    <!-- Slider Backgrounds -->
+    <div class="hero-slider-bg active" style="background: linear-gradient(135deg, rgba(79,70,229,0.92) 0%, rgba(37,99,235,0.82) 100%), url('{% static 'images/hero-bg.webp' %}') center/cover;"></div>
+    <div class="hero-slider-bg" style="background: linear-gradient(135deg, rgba(15,23,42,0.92) 0%, rgba(88,28,135,0.82) 100%);"></div>
+    <div class="hero-slider-bg" style="background: linear-gradient(135deg, rgba(6,182,212,0.92) 0%, rgba(37,99,235,0.82) 100%);"></div>
+    
+    <div class="hero-slider-dots">
+        <div class="slider-dot active"></div>
+        <div class="slider-dot"></div>
+        <div class="slider-dot"></div>
+    </div>
+
     <div class="hero-content">
         <div class="lp-inner">
             <div class="hero-inner">
@@ -563,37 +677,6 @@ body > div.container {
                         <a href="#browse-events" class="hero-btn-outline">
                             <i class="fa-solid fa-calendar-days"></i> Browse Events
                         </a>
-                    </div>
-                </div>
-                <!-- Right: CSS-only product mockup -->
-                <div class="hero-mockup-side">
-                    <div class="mockup-frame">
-                        <div class="mockup-topbar">
-                            <div class="mkdot mkdot-r"></div>
-                            <div class="mkdot mkdot-y"></div>
-                            <div class="mkdot mkdot-g"></div>
-                            <div class="mkurl"></div>
-                        </div>
-                        <div class="mockup-body">
-                            <div class="mkcard-img">🎤</div>
-                            <div class="mkbadge">Conference</div>
-                            <div class="mktitle">AI &amp; Full-Stack Summit 2026</div>
-                            <div class="mkmeta">
-                                <i class="fa-solid fa-calendar-day" style="color:#4f46e5; font-size:0.7rem;"></i>
-                                Aug 15, 2026 · New Delhi
-                            </div>
-                            <div class="mkcap-row">
-                                <span>Seats reserved: 62/100</span>
-                                <span style="color:#059669; font-weight:700;">38 left</span>
-                            </div>
-                            <div class="mkbar-wrap">
-                                <div class="mkbar-fill"></div>
-                            </div>
-                            <div class="mkbtn">View Event Pass &amp; Register</div>
-                            <div class="mkticket">
-                                <i class="fa-solid fa-ticket"></i> Instant QR ticket on registration
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -624,6 +707,26 @@ body > div.container {
         </div>
     </div>
 </div>
+
+<!-- LIVE INSIGHTS RIBBON -->
+<div class="insights-ribbon" style="background: var(--bg-card); border-bottom: 1px solid var(--border-glass); padding: 0.75rem 0; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">
+    <div class="lp-inner">
+        <div class="insights-ticker" id="insightsTicker" style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; font-weight: 500;">
+            {% if events_today_count > 0 %}
+            <span class="insight-item"><i class="fa-solid fa-fire" style="color: var(--warning);"></i> {{ events_today_count }} event{{ events_today_count|pluralize }} happening today</span>
+            {% endif %}
+            
+            {% if most_active_category %}
+            <span class="insight-item"><i class="fa-solid fa-arrow-trend-up" style="color: var(--success);"></i> {{ most_active_category }} trending this month</span>
+            {% endif %}
+            
+            {% if fewest_slots_event %}
+            <span class="insight-item"><i class="fa-solid fa-bolt" style="color: var(--accent-pink);"></i> Only {{ fewest_slots_event.slots_left }} spot{{ fewest_slots_event.slots_left|pluralize }} left — <a href="{% url 'event_detail' fewest_slots_event.id %}" style="color: inherit; text-decoration: underline;">{{ fewest_slots_event.title }}</a></span>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
 
 
 <!-- ─────────────────────────────────────────────────────────
@@ -717,9 +820,65 @@ body > div.container {
 ───────────────────────────────────────────────────────── -->
 <section class="lp-section browse-section" id="browse-events">
     <div class="lp-inner">
+
+        <!-- TRENDING NOW ROW -->
+        {% if trending_events %}
+        <div class="trending-row" style="margin-bottom: 4rem;">
+            <div class="section-eyebrow" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-fire"></i> Trending Now</div>
+            <h2 class="section-headline" style="font-size: 1.8rem; margin-bottom: 1.5rem;">Recommended for You</h2>
+            <div class="trending-scroll" style="display: flex; gap: 1.5rem; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1.5rem; -webkit-overflow-scrolling: touch;">
+                {% for event in trending_events %}
+                <div class="event-card" style="min-width: 340px; scroll-snap-align: start; flex: 0 0 auto;">
+                    {% if event.image %}
+                    <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
+                        <img src="{{ event.image.url }}" alt="{{ event.title }} banner" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                    {% else %}
+                    <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-calendar-star" style="font-size: 2.2rem; color: #c7d2fe;"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="event-header">
+                        <div class="badge-bar">
+                            <span class="event-badge badge-category">
+                                <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
+                            </span>
+                            {% if event.event_type == 'VIRTUAL' %}
+                            <span class="event-badge badge-virtual"><i class="fa-solid fa-video"></i> Virtual</span>
+                            {% elif event.event_type == 'HYBRID' %}
+                            <span class="event-badge badge-category"><i class="fa-solid fa-network-wired"></i> Hybrid</span>
+                            {% else %}
+                            <span class="event-badge badge-in_person"><i class="fa-solid fa-building"></i> In-Person</span>
+                            {% endif %}
+                        </div>
+                        <h3 class="event-title">{{ event.title }}</h3>
+                    </div>
+
+                    <div class="event-body">
+                        <div class="event-meta">
+                            <div class="meta-item">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <span>{{ event.date|date:"F j, Y, g:i a" }}</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span>{{ event.location }}</span>
+                            </div>
+                        </div>
+                        <div class="event-footer">
+                            <a href="{% url 'event_detail' event.id %}" class="btn-primary" style="display: block; text-align: center; margin-top: 1rem; text-decoration: none;">View Event Details</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="browse-header reveal">
             <div class="section-eyebrow">Live on Platform</div>
-            <h2 class="section-headline">Upcoming Events</h2>
+            <h2 class="section-headline">Explore All Events</h2>
             <p class="section-sub">All events listed here are reviewed and approved. Use the filters to find your next experience.</p>
         </div>
 
@@ -728,10 +887,12 @@ body > div.container {
             <div class="filter-sidebar glass-card">
                 <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Filter &amp; Search</h3>
                 <form method="GET" action="{% url 'event_list' %}">
-                    <div class="form-group">
+                    <div class="form-group" style="position: relative;">
                         <label for="q" class="form-label">Search Keyword</label>
                         <input type="text" name="q" id="q" class="form-control" placeholder="Title, speaker, topic..."
-                            value="{{ query }}">
+                            value="{{ query }}" autocomplete="off">
+                        <div id="searchSuggestions" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 8px; box-shadow: var(--card-shadow); z-index: 50; margin-top: 4px; max-height: 250px; overflow-y: auto;">
+                        </div>
                     </div>
 
                     <div class="form-group">
@@ -946,10 +1107,159 @@ body > div.container {
     </div>
 </section>
 
+<!-- ─────────────────────────────────────────────────────────
+     7. STATS COUNTER BAND
+───────────────────────────────────────────────────────── -->
+<section class="stats-band">
+    <div class="lp-inner">
+        <div class="stats-band-grid">
+            <div class="sb-item reveal">
+                <div class="sb-num"><span class="counter" data-target="{{ total_events }}" data-plus="true">0</span></div>
+                <div class="sb-label">Total Events Hosted</div>
+            </div>
+            <div class="sb-item reveal" style="transition-delay:0.1s;">
+                <div class="sb-num"><span class="counter" data-target="{{ total_tickets_issued }}" data-plus="true">0</span></div>
+                <div class="sb-label">Tickets Issued</div>
+            </div>
+            <div class="sb-item reveal" style="transition-delay:0.2s;">
+                <div class="sb-num"><span class="counter" data-target="{{ categories_offered }}">0</span></div>
+                <div class="sb-label">Categories Offered</div>
+            </div>
+            <div class="sb-item reveal" style="transition-delay:0.3s;">
+                <div class="sb-num"><span class="counter" data-target="{{ approval_rate }}">0</span>%</div>
+                <div class="sb-label">Approval Rate</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     8. EVENTS GALLERY
+───────────────────────────────────────────────────────── -->
+<section class="gallery-section">
+    <div class="lp-inner">
+        <div class="features-header reveal">
+            <span class="section-eyebrow">See What's Happening</span>
+            <h2 class="section-headline">Recent Events Gallery</h2>
+            <p class="section-sub">A glimpse into the diverse experiences hosted on Wiwi Events.</p>
+        </div>
+        
+        {% if gallery_events %}
+        <div class="gallery-grid">
+            {% for evt in gallery_events %}
+            <a href="{% url 'event_detail' evt.pk %}" class="gallery-item reveal" style="transition-delay: 0.{{ forloop.counter0|default:1 }}s;">
+                <img src="{{ evt.image.url }}" alt="{{ evt.title }}" class="gallery-img" loading="lazy">
+                <div class="gallery-overlay">
+                    <div class="mkbadge" style="background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(4px);">{{ evt.get_category_display }}</div>
+                    <div class="gallery-title">{{ evt.title }}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="glass-card no-events reveal">
+            <i class="fa-solid fa-camera"></i>
+            <h3>No Photos Yet</h3>
+            <p>Event photos will appear here once organizers add them to approved events.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ─────────────────────────────────────────────────────────
+     9. QUICK INQUIRY
+───────────────────────────────────────────────────────── -->
+<section class="contact-section lp-section">
+    <div class="lp-inner">
+        <div class="contact-grid">
+            <div class="reveal">
+                <h2 class="section-headline">Want to Host an Event With Us?</h2>
+                <p class="section-sub" style="font-size: 1.1rem; margin-bottom: 2rem;">
+                    Whether you're organizing a 500-person summit or a small community meetup, we'd love to help you get started. Drop us a line and our team will guide you through the process.
+                </p>
+            </div>
+            <div class="reveal" style="transition-delay:0.2s;">
+                <div class="contact-form">
+                    <form method="POST" action="{% url 'contact_inquiry' %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-label" style="font-weight: 600; color: var(--text-secondary);">Your Name</label>
+                            <input type="text" name="name" class="form-control" required placeholder="Jane Doe">
+                        </div>
+                        <div class="form-group" style="margin-top: 1.2rem;">
+                            <label class="form-label" style="font-weight: 600; color: var(--text-secondary);">Email Address</label>
+                            <input type="email" name="email" class="form-control" required placeholder="jane@example.com">
+                        </div>
+                        <div class="form-group" style="margin-top: 1.2rem;">
+                            <label class="form-label" style="font-weight: 600; color: var(--text-secondary);">Message</label>
+                            <textarea name="message" class="form-control" rows="4" required placeholder="Tell us about your event..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary btn-full" style="margin-top: 1.5rem; justify-content: center;">
+                            <i class="fa-solid fa-paper-plane"></i> Send Inquiry
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 {% endblock %}
 
 {% block extra_scripts %}
 <script>
+/* Hero Slider */
+(function() {
+    const slides = document.querySelectorAll('.hero-slider-bg');
+    const dots = document.querySelectorAll('.slider-dot');
+    if (!slides.length) return;
+    
+    let current = 0;
+    setInterval(() => {
+        slides[current].classList.remove('active');
+        if(dots[current]) dots[current].classList.remove('active');
+        
+        current = (current + 1) % slides.length;
+        
+        slides[current].classList.add('active');
+        if(dots[current]) dots[current].classList.add('active');
+    }, 6000);
+})();
+
+/* Animated Counters */
+(function() {
+    const counters = document.querySelectorAll('.counter');
+    if (!counters.length) return;
+    
+    const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                const target = +el.getAttribute('data-target');
+                const duration = 2000;
+                const start = performance.now();
+                
+                const step = (timestamp) => {
+                    const progress = Math.min((timestamp - start) / duration, 1);
+                    const ease = 1 - Math.pow(1 - progress, 4);
+                    const current = Math.floor(ease * target);
+                    el.innerText = current;
+                    
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        el.innerText = target + (el.hasAttribute('data-plus') && target > 0 ? '+' : '');
+                    }
+                };
+                window.requestAnimationFrame(step);
+                obs.unobserve(el);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    counters.forEach(c => io.observe(c));
+})();
+
 /* Scroll-reveal observer */
 (function () {
     const els = document.querySelectorAll('.reveal');
@@ -963,6 +1273,81 @@ body > div.container {
         });
     }, { threshold: 0.10 });
     els.forEach(el => io.observe(el));
+})();
+/* Live Insights Ticker Rotation */
+(function() {
+    const ticker = document.getElementById('insightsTicker');
+    if (!ticker) return;
+    const items = ticker.querySelectorAll('.insight-item');
+    if (items.length <= 1) return; // Need at least 2 to cycle
+    
+    // For mobile or narrow screens, we might want to cycle them one by one if they don't fit
+    // but the user requested: auto-cycle every 4 seconds via simple JS, or just show all 2-3 side by side on desktop and stack on mobile.
+    // CSS flex-wrap handles stacking. We can leave it visible, but if we want to rotate them, we'd need some CSS.
+    // Actually, user said: "(auto-cycle every 4 seconds via simple JS, or just show all 2-3 side by side on desktop and stack on mobile)". I implemented them side-by-side with flex-wrap which perfectly covers the second option and is much more stable!
+})();
+
+/* Smart Search Auto-complete */
+(function() {
+    const input = document.getElementById('q');
+    const suggBox = document.getElementById('searchSuggestions');
+    if(!input || !suggBox) return;
+
+    let timeout = null;
+    
+    input.addEventListener('input', function() {
+        clearTimeout(timeout);
+        const q = this.value.trim();
+        if(q.length < 2) {
+            suggBox.style.display = 'none';
+            return;
+        }
+        
+        timeout = setTimeout(() => {
+            fetch(`/api/search-suggestions/?q=${encodeURIComponent(q)}`)
+            .then(r => r.json())
+            .then(data => {
+                const arr = data.suggestions;
+                if(!arr || arr.length === 0) {
+                    suggBox.style.display = 'none';
+                    return;
+                }
+                
+                suggBox.innerHTML = '';
+                arr.forEach(item => {
+                    const div = document.createElement('div');
+                    div.style.padding = '0.75rem 1rem';
+                    div.style.cursor = 'pointer';
+                    div.style.borderBottom = '1px solid var(--border-glass)';
+                    div.style.color = 'var(--text-primary)';
+                    div.innerText = item;
+                    
+                    div.addEventListener('mouseover', () => { div.style.background = 'var(--bg-primary)'; });
+                    div.addEventListener('mouseout', () => { div.style.background = 'transparent'; });
+                    
+                    div.addEventListener('click', () => {
+                        input.value = item;
+                        suggBox.style.display = 'none';
+                        input.form.submit();
+                    });
+                    
+                    suggBox.appendChild(div);
+                });
+                suggBox.style.display = 'block';
+            })
+            .catch(err => console.error(err));
+        }, 300);
+    });
+
+    // Close on blur or Escape
+    document.addEventListener('click', (e) => {
+        if(e.target !== input && !suggBox.contains(e.target)) {
+            suggBox.style.display = 'none';
+        }
+    });
+    input.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') suggBox.style.display = 'none';
+    });
 })();
 </script>
 {% endblock %}
