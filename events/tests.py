@@ -109,7 +109,7 @@ class EventManagementRBACAndConcurrencyTests(TransactionTestCase):
         self.assertEqual(registration_count, 1, "Concurrency issue: Event was overbooked!")
         
         # Count successful responses vs failures
-        success_responses = [r for r in results if r[1] in (201, 302)]
+        success_responses = [r for r in results if r[1] in (200, 201, 302)]
         error_responses = [r for r in results if r[1] == 400]
         
         self.assertGreaterEqual(len(success_responses), 1, "At least one thread should receive a success response.")

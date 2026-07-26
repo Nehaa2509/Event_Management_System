@@ -13,24 +13,28 @@
     
     <style>
         :root {
-            --bg-primary: #0a0614;
-            --bg-secondary: rgba(24, 16, 38, 0.75);
-            --bg-card: rgba(24, 16, 38, 0.65);
-            --border-glass: rgba(255, 255, 255, 0.1);
-            --border-glowing: rgba(219, 39, 119, 0.4);
-            --accent-gradient: linear-gradient(135deg, #a21caf 0%, #db2777 35%, #f97316 70%, #facc15 100%);
-            --accent-gradient-hover: linear-gradient(135deg, #86198f 0%, #be185d 35%, #ea580c 70%, #eab308 100%);
-            --accent-violet: #a21caf;
-            --accent-cyan: #f97316;
-            --accent-pink: #db2777;
-            --text-primary: #f8fafc;
-            --text-secondary: #a78bda;
-            --text-muted: #7c6a94;
-            --success: #34d399;
-            --error: #fb7185;
-            --warning: #fbbf24;
-            --glow-shadow: 0 0 25px rgba(219, 39, 119, 0.35);
-            --card-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --border-glass: #e2e8f0;
+            --border-glowing: rgba(99, 102, 241, 0.35);
+
+            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
+            --accent-gradient-hover: linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #1d4ed8 100%);
+            --accent-violet: #7c3aed;
+            --accent-cyan: #2563eb;
+            --accent-pink: #4f46e5;
+
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+
+            --success: #059669;
+            --error: #dc2626;
+            --warning: #d97706;
+
+            --glow-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+            --card-shadow: 0 4px 24px rgba(15, 23, 42, 0.06);
         }
 
         * {
@@ -47,11 +51,6 @@
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 85% 75%, rgba(6, 182, 212, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.08) 0%, transparent 60%);
-            background-attachment: fixed;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -62,10 +61,9 @@
 
         /* Navbar */
         nav {
-            background: rgba(6, 9, 19, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: #ffffff;
             border-bottom: 1px solid var(--border-glass);
+            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -115,14 +113,14 @@
 
         .nav-link:hover {
             color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.05);
+            background: #f1f5f9;
         }
 
         .nav-link.active {
-            color: var(--text-primary);
-            background: rgba(124, 58, 237, 0.2);
-            border: 1px solid rgba(124, 58, 237, 0.4);
-            box-shadow: 0 0 15px rgba(124, 58, 237, 0.2);
+            color: #4f46e5;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            box-shadow: 0 1px 3px rgba(79, 70, 229, 0.1);
         }
 
         .btn-create {
@@ -143,7 +141,7 @@
 
         .btn-create:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
             background: var(--accent-gradient-hover);
         }
 
@@ -156,7 +154,7 @@
         .welcome-text {
             color: var(--text-secondary);
             font-size: 0.9rem;
-            background: rgba(255, 255, 255, 0.04);
+            background: #f1f5f9;
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
             border: 1px solid var(--border-glass);
@@ -178,17 +176,16 @@
         /* Glass Cards */
         .glass-card {
             background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-glass);
-            border-radius: 18px;
+            border-radius: 14px;
             padding: 2rem;
             box-shadow: var(--card-shadow);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .glass-card:hover {
-            border-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
         }
 
         /* Alerts/Messages */
@@ -206,31 +203,30 @@
             gap: 0.8rem;
             animation: slideIn 0.3s ease-out;
             border: 1px solid transparent;
-            backdrop-filter: blur(10px);
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.15);
+            background: #ecfdf5;
             color: var(--success);
-            border-color: rgba(16, 185, 129, 0.3);
+            border-color: #a7f3d0;
         }
 
         .alert-error {
-            background: rgba(244, 63, 94, 0.15);
+            background: #fef2f2;
             color: var(--error);
-            border-color: rgba(244, 63, 94, 0.3);
+            border-color: #fecaca;
         }
 
         .alert-warning {
-            background: rgba(245, 158, 11, 0.15);
+            background: #fffbeb;
             color: var(--warning);
-            border-color: rgba(245, 158, 11, 0.3);
+            border-color: #fde68a;
         }
 
         .alert-info {
-            background: rgba(6, 182, 212, 0.15);
+            background: #eff6ff;
             color: var(--accent-cyan);
-            border-color: rgba(6, 182, 212, 0.3);
+            border-color: #bfdbfe;
         }
 
         /* Footer */
@@ -238,11 +234,10 @@
             border-top: 1px solid var(--border-glass);
             padding: 2rem;
             text-align: center;
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-size: 0.9rem;
             margin-top: auto;
-            background: rgba(6, 9, 19, 0.8);
-            backdrop-filter: blur(10px);
+            background: #f1f5f9;
         }
 
         /* Common Form Styles */
@@ -262,7 +257,7 @@
         .form-control {
             width: 100%;
             padding: 0.85rem 1.1rem;
-            background: rgba(15, 23, 42, 0.7);
+            background: #ffffff;
             border: 1px solid var(--border-glass);
             border-radius: 10px;
             color: var(--text-primary);
@@ -274,8 +269,8 @@
         .form-control:focus {
             outline: none;
             border-color: var(--accent-violet);
-            box-shadow: 0 0 15px rgba(124, 58, 237, 0.25);
-            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+            background: #ffffff;
         }
 
         .btn-primary {
@@ -299,11 +294,11 @@
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(124, 58, 237, 0.5);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
+            background: #f1f5f9;
             color: var(--text-primary);
             border: 1px solid var(--border-glass);
             padding: 0.65rem 1.2rem;
@@ -319,15 +314,15 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: #e2e8f0;
+            border-color: #cbd5e1;
+            color: var(--text-primary);
         }
 
         .btn-danger {
-            background: rgba(244, 63, 94, 0.15);
+            background: #fef2f2;
             color: var(--error);
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            border: 1px solid #fecaca;
             padding: 0.65rem 1.2rem;
             border-radius: 10px;
             font-size: 0.9rem;
@@ -342,7 +337,7 @@
         .btn-danger:hover {
             background: var(--error);
             color: white;
-            box-shadow: 0 0 20px rgba(244, 63, 94, 0.4);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
         }
 
         .auth-link {
@@ -353,7 +348,7 @@
         }
 
         .auth-link:hover {
-            color: #38bdf8;
+            color: #1d4ed8;
             text-decoration: underline;
         }
 
@@ -384,6 +379,102 @@
             .nav-user {
                 width: 100%;
                 justify-content: center;
+            }
+        }
+
+        /* ── Multi-column SaaS Footer ── */
+        .site-footer {
+            background: #f1f5f9;
+            border-top: 1px solid var(--border-glass);
+            margin-top: 0;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3.5rem 2rem 2rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-tagline {
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .footer-heading {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .footer-links li {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: #4f46e5;
+        }
+
+        .footer-links i {
+            width: 14px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border-glass);
+            text-align: center;
+            padding: 1.2rem 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .footer-inner {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem 1.5rem;
             }
         }
     </style>
@@ -425,6 +516,8 @@
         </div>
     </nav>
 
+    {% block full_bleed_content %}{% endblock %}
+
     <div class="container">
         {% if messages %}
             <div class="messages-container">
@@ -446,8 +539,39 @@
         {% block content %}{% endblock %}
     </div>
 
-    <footer>
-        &copy; 2026 Wiwi Events. Built with modern Django backend, transactions, and security.
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-col footer-brand">
+                <div class="footer-logo">
+                    <i class="fa-solid fa-sparkles" style="background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    Wiwi Events
+                </div>
+                <p class="footer-tagline">Registration, ticketing, and approvals — all in one place, for every kind of event.</p>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{% url 'event_list' %}"><i class="fa-solid fa-calendar-days"></i> Browse Events</a></li>
+                    <li><a href="{% url 'login' %}"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                    <li><a href="{% url 'register' %}"><i class="fa-solid fa-user-plus"></i> Sign Up</a></li>
+                    {% if request.user.is_authenticated %}
+                    <li><a href="{% url 'create_event' %}"><i class="fa-solid fa-plus"></i> Host an Event</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 class="footer-heading">Built With</h4>
+                <ul class="footer-links">
+                    <li><i class="fa-brands fa-python"></i> Django 6 + Python 3.13</li>
+                    <li><i class="fa-solid fa-database"></i> SQLite (dev) / PostgreSQL (prod)</li>
+                    <li><i class="fa-solid fa-plug"></i> Django REST Framework</li>
+                    <li><i class="fa-solid fa-lock"></i> WhiteNoise static serving</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Wiwi Events. Built with Django, transactions, and care.
+        </div>
     </footer>
     
     {% block extra_scripts %}{% endblock %}

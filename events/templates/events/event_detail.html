@@ -10,25 +10,25 @@
         gap: 2rem;
         align-items: start;
     }
-    
+
     .event-main {
         padding: 2.5rem;
     }
-    
+
     .event-detail-title {
         font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 1rem;
         line-height: 1.2;
     }
-    
+
     .event-detail-desc {
         color: var(--text-secondary);
         font-size: 1.1rem;
         line-height: 1.7;
         margin-bottom: 2rem;
     }
-    
+
     .info-list {
         list-style: none;
         display: grid;
@@ -37,13 +37,13 @@
         border-top: 1px solid var(--border-glass);
         padding-top: 1.5rem;
     }
-    
+
     .info-item {
         display: flex;
         flex-direction: column;
         gap: 0.3rem;
     }
-    
+
     .info-item-label {
         font-size: 0.8rem;
         text-transform: uppercase;
@@ -51,41 +51,41 @@
         color: var(--text-muted);
         font-weight: 600;
     }
-    
+
     .info-item-value {
         font-size: 1.1rem;
         font-weight: 500;
     }
-    
+
     .info-item-value i {
         color: #8b5cf6;
         margin-right: 0.5rem;
     }
-    
+
     /* Sidebar info */
     .event-sidebar {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
     }
-    
+
     .sidebar-block {
         padding: 2rem;
     }
-    
+
     .registration-status {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .slots-indicator {
         display: flex;
         justify-content: space-between;
         font-size: 0.95rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .progress-bar-container {
         width: 100%;
         height: 10px;
@@ -93,14 +93,14 @@
         border-radius: 10px;
         overflow: hidden;
     }
-    
+
     .progress-bar {
         height: 100%;
         background: var(--accent-gradient);
         border-radius: 10px;
         transition: width 0.5s ease;
     }
-    
+
     .btn-action {
         width: 100%;
         font-family: inherit;
@@ -116,32 +116,32 @@
         gap: 0.6rem;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .btn-register-active {
         background: var(--accent-gradient);
         color: white;
         box-shadow: var(--glow-shadow);
     }
-    
+
     .btn-register-active:hover {
         transform: translateY(-2px);
         box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
     }
-    
+
     .btn-registered {
         background: rgba(16, 185, 129, 0.15);
         color: var(--success);
         border: 1px solid rgba(16, 185, 129, 0.3);
         cursor: not-allowed;
     }
-    
+
     .btn-full {
         background: rgba(239, 68, 68, 0.15);
         color: var(--error);
         border: 1px solid rgba(239, 68, 68, 0.3);
         cursor: not-allowed;
     }
-    
+
     .status-toast {
         margin-top: 1rem;
         padding: 0.8rem 1.2rem;
@@ -152,12 +152,12 @@
         gap: 0.6rem;
         animation: slideIn 0.3s ease-out;
     }
-    
+
     /* Admin Block */
     .admin-block {
         border-left: 4px solid var(--warning);
     }
-    
+
     .admin-title {
         color: var(--warning);
         margin-bottom: 0.5rem;
@@ -165,13 +165,13 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .admin-actions {
         display: flex;
         gap: 1rem;
         margin-top: 1rem;
     }
-    
+
     .btn-approve {
         background: rgba(245, 158, 11, 0.15);
         color: var(--warning);
@@ -186,7 +186,7 @@
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .btn-approve:hover {
         background: var(--warning);
         color: #000;
@@ -211,104 +211,128 @@
     <!-- Main Info Block -->
     <div class="glass-card event-main">
         {% if not event.is_approved %}
-            <span class="event-badge badge-pending">
-                <i class="fa-solid fa-clock"></i> Pending Approval
-            </span>
+        <span class="event-badge badge-pending">
+            <i class="fa-solid fa-clock"></i> Pending Approval
+        </span>
         {% else %}
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;">
-                <span class="event-badge badge-approved">
-                    <i class="fa-solid fa-circle-check"></i> Approved & Active
-                </span>
-                <span class="event-badge" style="background: rgba(99, 102, 241, 0.15); color: #8b5cf6; border: 1px solid rgba(99, 102, 241, 0.3);">
-                    <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
-                </span>
-                <span class="event-badge" style="background: rgba(217, 70, 239, 0.15); color: #d946ef; border: 1px solid rgba(217, 70, 239, 0.3);">
-                    {% if event.event_type == 'VIRTUAL' %}
-                        <i class="fa-solid fa-video"></i> Virtual Event
-                    {% elif event.event_type == 'HYBRID' %}
-                        <i class="fa-solid fa-network-wired"></i> Hybrid
-                    {% else %}
-                        <i class="fa-solid fa-building"></i> In-Person
-                    {% endif %}
-                </span>
-            </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem;">
+            <span class="event-badge badge-approved">
+                <i class="fa-solid fa-circle-check"></i> Approved & Active
+            </span>
+            <span class="event-badge"
+                style="background: rgba(99, 102, 241, 0.15); color: #8b5cf6; border: 1px solid rgba(99, 102, 241, 0.3);">
+                <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
+            </span>
+            <span class="event-badge"
+                style="background: rgba(217, 70, 239, 0.15); color: #d946ef; border: 1px solid rgba(217, 70, 239, 0.3);">
+                {% if event.event_type == 'VIRTUAL' %}
+                <i class="fa-solid fa-video"></i> Virtual Event
+                {% elif event.event_type == 'HYBRID' %}
+                <i class="fa-solid fa-network-wired"></i> Hybrid
+                {% else %}
+                <i class="fa-solid fa-building"></i> In-Person
+                {% endif %}
+            </span>
+        </div>
         {% endif %}
 
         <!-- Event Banner -->
         {% if event.image %}
-            <div style="margin: 1rem 0 1.5rem; border-radius: 14px; overflow: hidden; max-height: 340px;">
-                <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
-                    style="width: 100%; object-fit: cover; display: block; max-height: 340px;">
-            </div>
+        <div style="margin: 1rem 0 1.5rem; border-radius: 14px; overflow: hidden; max-height: 340px;">
+            <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
+                style="width: 100%; object-fit: cover; display: block; max-height: 340px;">
+        </div>
         {% else %}
-            <div style="margin: 1rem 0 1.5rem; height: 200px; background: linear-gradient(135deg, rgba(124,58,237,0.3) 0%, rgba(6,182,212,0.2) 50%, rgba(236,72,153,0.25) 100%); border-radius: 14px; border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center; gap: 1rem;">
-                <i class="fa-solid fa-calendar-star" style="font-size: 3.5rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.6;"></i>
-            </div>
+        <div
+            style="margin: 1rem 0 1.5rem; height: 200px; background: linear-gradient(135deg, rgba(124,58,237,0.3) 0%, rgba(6,182,212,0.2) 50%, rgba(236,72,153,0.25) 100%); border-radius: 14px; border: 1px solid var(--border-glass); display: flex; align-items: center; justify-content: center; gap: 1rem;">
+            <i class="fa-solid fa-calendar-star"
+                style="font-size: 3.5rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0.6;"></i>
+        </div>
         {% endif %}
-        
+
         <h1 class="event-detail-title">{{ event.title }}</h1>
         <p class="event-detail-desc">{{ event.description }}</p>
-        
+
         {% if event.speaker_name %}
-            <div style="margin: 2rem 0; padding: 1.2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px;">
-                <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.8rem;">
-                    <i class="fa-solid fa-microphone-lines" style="color: #8b5cf6;"></i> Keynote Speaker
-                </h4>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: white;">
-                        {{ event.speaker_name|slice:":1"|upper }}
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name }}</h3>
-                        {% if event.speaker_role %}
-                            <p style="color: var(--text-secondary); font-size: 0.9rem;">{{ event.speaker_role }}</p>
-                        {% endif %}
-                    </div>
+        <div
+            style="margin: 2rem 0; padding: 1.2rem; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-glass); border-radius: 12px;">
+            <h4
+                style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; margin-bottom: 0.8rem;">
+                <i class="fa-solid fa-microphone-lines" style="color: #8b5cf6;"></i> Keynote Speaker
+            </h4>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div
+                    style="width: 48px; height: 48px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: white;">
+                    {{ event.speaker_name|slice:":1"|upper }}
+                </div>
+                <div>
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-primary);">{{ event.speaker_name
+                        }}</h3>
+                    {% if event.speaker_role %}
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">{{ event.speaker_role }}</p>
+                    {% endif %}
                 </div>
             </div>
+        </div>
         {% endif %}
 
         <!-- Digital Ticket Pass Card if Registered -->
-        <div id="ticket-pass-card" style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, rgba(162, 28, 175, 0.25) 0%, rgba(219, 39, 119, 0.25) 50%, rgba(249, 115, 22, 0.25) 100%); border: 1px dashed rgba(236, 72, 153, 0.5); border-radius: 16px; box-shadow: 0 0 30px rgba(219, 39, 119, 0.25); {% if not already_registered %}display: none;{% endif %}">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <div id="ticket-pass-card"
+            style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, rgba(162, 28, 175, 0.25) 0%, rgba(219, 39, 119, 0.25) 50%, rgba(249, 115, 22, 0.25) 100%); border: 1px dashed rgba(236, 72, 153, 0.5); border-radius: 16px; box-shadow: 0 0 30px rgba(219, 39, 119, 0.25); {% if not already_registered %}display: none;{% endif %}">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 1rem; margin-bottom: 1rem;">
                 <div>
-                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f43f5e; font-weight: 700;">Verified Admission Pass</span>
-                    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Wiwi Digital Ticket</h3>
+                    <span
+                        style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f43f5e; font-weight: 700;">Verified
+                        Admission Pass</span>
+                    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">
+                        Wiwi Digital Ticket</h3>
                 </div>
                 <div style="text-align: right;">
-                    <i class="fa-solid fa-qrcode" style="font-size: 2.2rem; color: #ec4899; filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6));"></i>
+                    <i class="fa-solid fa-qrcode"
+                        style="font-size: 2.2rem; color: #ec4899; filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6));"></i>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.2rem;">
+            <div
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.2rem;">
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Ticket Code</span>
-                    <strong id="ticket-code-display" style="font-family: 'Courier New', monospace; font-size: 1.1rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid rgba(251, 191, 36, 0.35); box-shadow: 0 0 12px rgba(251, 191, 36, 0.2); display: inline-block;">
+                    <span
+                        style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Ticket
+                        Code</span>
+                    <strong id="ticket-code-display"
+                        style="font-family: 'Courier New', monospace; font-size: 1.1rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid rgba(251, 191, 36, 0.35); box-shadow: 0 0 12px rgba(251, 191, 36, 0.2); display: inline-block;">
                         {% if registration %}{{ registration.ticket_code }}{% else %}GENERATING...{% endif %}
                     </strong>
                 </div>
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Pass Holder</span>
-                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{ request.user.username|upper }}</strong>
+                    <span
+                        style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Pass
+                        Holder</span>
+                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{
+                        request.user.username|upper }}</strong>
                 </div>
             </div>
             {% if registration %}
-            <a href="{% url 'view_ticket' registration.id %}" id="view-full-ticket-btn" class="btn-primary" style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
+            <a href="{% url 'view_ticket' registration.id %}" id="view-full-ticket-btn" class="btn-primary"
+                style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
                 <i class="fa-solid fa-ticket"></i> View Full Printable Ticket Pass
             </a>
             {% else %}
-            <a href="#" id="view-full-ticket-btn" class="btn-primary" style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
+            <a href="#" id="view-full-ticket-btn" class="btn-primary"
+                style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
                 <i class="fa-solid fa-ticket"></i> View Full Printable Ticket Pass
             </a>
             {% endif %}
         </div>
-        
+
         <ul class="info-list">
             <li class="info-item">
                 <span class="info-item-label">Date & Time</span>
                 <span class="info-item-value">
                     <i class="fa-solid fa-calendar-days"></i> {{ event.date|date:"M d, Y" }}
                 </span>
-                <span class="info-item-value" style="font-size: 0.95rem; color: var(--text-secondary); margin-left: 1.5rem;">
+                <span class="info-item-value"
+                    style="font-size: 0.95rem; color: var(--text-secondary); margin-left: 1.5rem;">
                     {{ event.date|date:"g:i a (T)" }}
                 </span>
             </li>
@@ -328,35 +352,41 @@
 
         <!-- Attendees Roster for Host/Staff -->
         {% if request.user.is_staff or request.user == event.organizer %}
-            <div style="margin-top: 2.5rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
-                <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
-                    <i class="fa-solid fa-users" style="color: #8b5cf6;"></i> Registered Attendees ({{ attendees.count }})
-                </h3>
-                {% if attendees %}
-                    <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-glass); border-radius: 10px;">
-                        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
-                            <thead>
-                                <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
-                                    <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Username</th>
-                                    <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Ticket Code</th>
-                                    <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Registration Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for att in attendees %}
-                                    <tr style="border-bottom: 1px solid var(--border-glass);">
-                                        <td style="padding: 0.8rem 1rem; color: var(--text-primary); font-weight: 600; text-transform: uppercase;">{{ att.user.username|upper }}</td>
-                                        <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code }}</td>
-                                        <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M d, Y, g:i a" }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                {% else %}
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">No attendees registered yet.</p>
-                {% endif %}
+        <div style="margin-top: 2.5rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+            <h3
+                style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-users" style="color: #8b5cf6;"></i> Registered Attendees ({{ attendees.count }})
+            </h3>
+            {% if attendees %}
+            <div
+                style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-glass); border-radius: 10px;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border-glass);">
+                            <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Username</th>
+                            <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Ticket Code</th>
+                            <th style="padding: 0.8rem 1rem; color: var(--text-muted);">Registration Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for att in attendees %}
+                        <tr style="border-bottom: 1px solid var(--border-glass);">
+                            <td
+                                style="padding: 0.8rem 1rem; color: var(--text-primary); font-weight: 600; text-transform: uppercase;">
+                                {{ att.user.username|upper }}</td>
+                            <td style="padding: 0.8rem 1rem; font-family: monospace; color: #10b981;">{{ att.ticket_code
+                                }}</td>
+                            <td style="padding: 0.8rem 1rem; color: var(--text-secondary);">{{ att.registered_at|date:"M
+                                d, Y, g:i a" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            {% else %}
+            <p style="color: var(--text-muted); font-size: 0.9rem;">No attendees registered yet.</p>
+            {% endif %}
+        </div>
         {% endif %}
     </div>
 
@@ -364,78 +394,88 @@
     <div class="event-sidebar">
         <!-- Admin / Organizer Controls Block -->
         {% if request.user.is_staff or request.user == event.organizer %}
-            <div class="glass-card sidebar-block admin-block">
-                <h3 class="admin-title">
-                    <i class="fa-solid fa-gear"></i> Management Panel
-                </h3>
-                {% if not event.is_approved and request.user.is_staff %}
-                    <p style="font-size: 0.9rem; color: var(--text-secondary);">This event is pending review.</p>
-                    <div class="admin-actions" style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
-                        <form method="POST" action="{% url 'approve_event' event.id %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn-approve">
-                                <i class="fa-solid fa-check"></i> Approve
-                            </button>
-                        </form>
-                        <form method="POST" action="{% url 'reject_event' event.id %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to reject and delete this event?');">
-                            {% csrf_token %}
-                            <button type="submit" style="background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;">
-                                <i class="fa-solid fa-xmark"></i> Reject
-                            </button>
-                        </form>
-                    </div>
-                {% endif %}
-                
-                <div style="display: flex; gap: 0.8rem; margin-top: 1rem;">
-                    <a href="{% url 'edit_event' event.id %}" class="btn-secondary" style="padding: 0.6rem 1rem; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem;">
-                        <i class="fa-solid fa-pen-to-square"></i> Edit Event
-                    </a>
-                    <form method="POST" action="{% url 'delete_event' event.id %}" onsubmit="return confirm('Are you sure you want to delete this event?');">
-                        {% csrf_token %}
-                        <button type="submit" style="background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
-                            <i class="fa-solid fa-trash-can"></i> Delete Event
-                        </button>
-                    </form>
-                </div>
+        <div class="glass-card sidebar-block admin-block">
+            <h3 class="admin-title">
+                <i class="fa-solid fa-gear"></i> Management Panel
+            </h3>
+            {% if not event.is_approved and request.user.is_staff %}
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">This event is pending review.</p>
+            <div class="admin-actions" style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
+                <form method="POST" action="{% url 'approve_event' event.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-approve">
+                        <i class="fa-solid fa-check"></i> Approve
+                    </button>
+                </form>
+                <form method="POST" action="{% url 'reject_event' event.id %}" style="display: inline;"
+                    onsubmit="return confirm('Are you sure you want to reject and delete this event?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                        style="background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer;">
+                        <i class="fa-solid fa-xmark"></i> Reject
+                    </button>
+                </form>
             </div>
+            {% endif %}
+
+            <div style="display: flex; gap: 0.8rem; margin-top: 1rem;">
+                <a href="{% url 'edit_event' event.id %}" class="btn-secondary"
+                    style="padding: 0.6rem 1rem; text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem;">
+                    <i class="fa-solid fa-pen-to-square"></i> Edit Event
+                </a>
+                <form method="POST" action="{% url 'delete_event' event.id %}"
+                    onsubmit="return confirm('Are you sure you want to delete this event?');">
+                    {% csrf_token %}
+                    <button type="submit"
+                        style="background: rgba(239, 68, 68, 0.15); color: var(--error); border: 1px solid rgba(239, 68, 68, 0.3); padding: 0.6rem 1rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer;">
+                        <i class="fa-solid fa-trash-can"></i> Delete Event
+                    </button>
+                </form>
+            </div>
+        </div>
         {% endif %}
 
         <!-- Registration Booking Block -->
         <div class="glass-card sidebar-block">
             <h3 style="margin-bottom: 1.2rem; font-size: 1.25rem;">Event Capacity & Booking</h3>
-            
+
             <div class="registration-status">
                 <div class="slots-indicator">
                     <span>Filled seats</span>
                     <span><strong id="filled-count">{{ registrations_count }}</strong> / {{ event.capacity }}</span>
                 </div>
                 <div class="progress-bar-container">
-                    <div id="progress-bar" class="progress-bar" style="width: {% widthratio registrations_count event.capacity 100 %}%"></div>
+                    <div id="progress-bar" class="progress-bar"
+                        style="width: {% widthratio registrations_count event.capacity 100 %}%"></div>
                 </div>
-                
-                <div style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
-                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left }}</strong></span>
+
+                <div
+                    style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left
+                            }}</strong></span>
                     {% if user.is_authenticated and user_tickets > 0 %}
-                        <span id="user-held-tag" style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets }}/5</span>
+                    <span id="user-held-tag"
+                        style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets
+                        }}/5</span>
                     {% endif %}
                 </div>
 
                 {% if not event.is_approved %}
-                    <button class="btn-action btn-full" disabled>
-                        <i class="fa-solid fa-ban"></i> Event Pending Approval
+                <button class="btn-action btn-full" disabled>
+                    <i class="fa-solid fa-ban"></i> Event Pending Approval
+                </button>
+                {% elif slots_left <= 0 and user_tickets <=0 %} <button id="reg-btn" class="btn-action btn-full"
+                    disabled>
+                    <i class="fa-solid fa-circle-xmark"></i> Fully Booked!
                     </button>
-                {% elif slots_left <= 0 and user_tickets <= 0 %}
-                    <button id="reg-btn" class="btn-action btn-full" disabled>
-                        <i class="fa-solid fa-circle-xmark"></i> Fully Booked!
-                    </button>
-                {% else %}
+                    {% else %}
                     {% if max_selectable > 0 %}
-                        <div style="margin-bottom: 1rem; background: rgba(24, 16, 38, 0.6); border: 1px solid var(--border-glass); border-radius: 12px; padding: 0.85rem 1rem;">
+                        <div style="margin-bottom: 1rem; background: #f8fafc; border: 1px solid var(--border-glass); border-radius: 12px; padding: 0.85rem 1rem;">
                             <label for="ticket-quantity" style="display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem;">
                                 Select Ticket Quantity (Max 5 per user)
                             </label>
                             <div style="display: flex; align-items: center; gap: 0.8rem;">
-                                <select id="ticket-quantity" class="form-control" style="background: rgba(15, 23, 42, 0.85); color: var(--text-primary); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.45rem 0.8rem; font-size: 0.95rem; font-weight: 700; flex: 1;">
+                                <select id="ticket-quantity" class="form-control" style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.45rem 0.8rem; font-size: 0.95rem; font-weight: 700; flex: 1;">
                                     {% for i in "12345"|make_list %}
                                         {% if forloop.counter <= max_selectable %}
                                             <option value="{{ forloop.counter }}">{{ forloop.counter }} Ticket{% if forloop.counter > 1 %}s{% endif %}</option>
@@ -447,24 +487,28 @@
                                 </span>
                             </div>
                         </div>
+                    </div>
 
-                        <button id="reg-btn" class="btn-action btn-create" onclick="registerForEvent({{ event.id }})">
-                            <i class="fa-solid fa-ticket"></i> Reserve Ticket(s)
-                        </button>
+                    <button id="reg-btn" class="btn-action btn-create" onclick="registerForEvent({{ event.id }})">
+                        <i class="fa-solid fa-ticket"></i> Reserve Ticket(s)
+                    </button>
                     {% else %}
-                        <div style="font-size: 0.88rem; color: var(--warning); font-weight: 600; margin-bottom: 0.8rem; text-align: center;">
-                            <i class="fa-solid fa-circle-info"></i> You reached the max limit of 5 tickets for this event.
-                        </div>
+                    <div
+                        style="font-size: 0.88rem; color: var(--warning); font-weight: 600; margin-bottom: 0.8rem; text-align: center;">
+                        <i class="fa-solid fa-circle-info"></i> You reached the max limit of 5 tickets for this event.
+                    </div>
                     {% endif %}
 
                     {% if already_registered %}
-                        <button id="cancel-btn" class="btn-action" style="margin-top: 0.8rem; background: rgba(244, 63, 94, 0.12); color: var(--error); border: 1px solid rgba(244, 63, 94, 0.3);" onclick="unregisterFromEvent({{ event.id }})">
-                            <i class="fa-solid fa-circle-minus"></i> Cancel Booking
-                        </button>
+                    <button id="cancel-btn" class="btn-action"
+                        style="margin-top: 0.8rem; background: rgba(244, 63, 94, 0.12); color: var(--error); border: 1px solid rgba(244, 63, 94, 0.3);"
+                        onclick="unregisterFromEvent({{ event.id }})">
+                        <i class="fa-solid fa-circle-minus"></i> Cancel Booking
+                    </button>
                     {% endif %}
-                {% endif %}
-                
-                <div id="status-toast" class="status-toast"></div>
+                    {% endif %}
+
+                    <div id="status-toast" class="status-toast"></div>
             </div>
         </div>
     </div>
@@ -497,10 +541,10 @@
         const qtySelect = document.getElementById('ticket-quantity');
         const quantity = qtySelect ? parseInt(qtySelect.value) : 1;
         const csrftoken = getCsrfToken();
-        
+
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reserving tickets...';
-        
+
         fetch(`/event/${eventId}/register/`, {
             method: 'POST',
             headers: {
@@ -509,67 +553,67 @@
             },
             body: new URLSearchParams({ 'quantity': quantity })
         })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status === 200 || status === 201) {
-                toast.style.display = 'flex';
-                toast.style.background = 'rgba(16, 185, 129, 0.15)';
-                toast.style.color = 'var(--success)';
-                toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
-                toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
-                
-                if (body.slots_left !== undefined) {
-                    document.getElementById('slots-left').innerText = body.slots_left;
-                    const filled = currentCapacity - body.slots_left;
-                    document.getElementById('filled-count').innerText = filled;
-                    const pct = Math.min(100, (filled / currentCapacity) * 100);
-                    document.getElementById('progress-bar').style.width = pct + '%';
-                }
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 200 || status === 201) {
+                    toast.style.display = 'flex';
+                    toast.style.background = 'rgba(16, 185, 129, 0.15)';
+                    toast.style.color = 'var(--success)';
+                    toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                    toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
 
-                // Show Digital Ticket Pass
-                const ticketCard = document.getElementById('ticket-pass-card');
-                if (ticketCard) {
-                    ticketCard.style.display = 'block';
-                    if (body.ticket_code) {
-                        document.getElementById('ticket-code-display').innerText = body.ticket_code;
+                    if (body.slots_left !== undefined) {
+                        document.getElementById('slots-left').innerText = body.slots_left;
+                        const filled = currentCapacity - body.slots_left;
+                        document.getElementById('filled-count').innerText = filled;
+                        const pct = Math.min(100, (filled / currentCapacity) * 100);
+                        document.getElementById('progress-bar').style.width = pct + '%';
                     }
-                }
 
-                setTimeout(() => { window.location.reload(); }, 1200);
-            } else {
+                    // Show Digital Ticket Pass
+                    const ticketCard = document.getElementById('ticket-pass-card');
+                    if (ticketCard) {
+                        ticketCard.style.display = 'block';
+                        if (body.ticket_code) {
+                            document.getElementById('ticket-code-display').innerText = body.ticket_code;
+                        }
+                    }
+
+                    setTimeout(() => { window.location.reload(); }, 1200);
+                } else {
+                    toast.style.display = 'flex';
+                    toast.style.background = 'rgba(239, 68, 68, 0.15)';
+                    toast.style.color = 'var(--error)';
+                    toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Registration failed');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Reserve Ticket(s)';
+                }
+            })
+            .catch(err => {
+                console.error('Error:', err);
                 toast.style.display = 'flex';
                 toast.style.background = 'rgba(239, 68, 68, 0.15)';
                 toast.style.color = 'var(--error)';
                 toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-                toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Registration failed');
+                toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Reserve Ticket(s)';
-            }
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            toast.style.display = 'flex';
-            toast.style.background = 'rgba(239, 68, 68, 0.15)';
-            toast.style.color = 'var(--error)';
-            toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-            toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Reserve Ticket(s)';
-        });
+            });
     }
 
     function unregisterFromEvent(eventId) {
         if (!confirm('Are you sure you want to cancel your ticket reservation for this event?')) return;
-        
+
         const btn = document.getElementById('cancel-btn') || document.getElementById('reg-btn');
         const toast = document.getElementById('status-toast');
         const csrftoken = getCsrfToken();
-        
+
         if (btn) {
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling reservation...';
         }
-        
+
         fetch(`/event/${eventId}/unregister/`, {
             method: 'POST',
             headers: {
@@ -577,45 +621,45 @@
                 'X-CSRFToken': csrftoken,
             }
         })
-        .then(response => response.json().then(data => ({ status: response.status, body: data })))
-        .then(({ status, body }) => {
-            if (status === 200) {
-                if (toast) {
-                    toast.style.display = 'flex';
-                    toast.style.background = 'rgba(16, 185, 129, 0.15)';
-                    toast.style.color = 'var(--success)';
-                    toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
-                    toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(({ status, body }) => {
+                if (status === 200) {
+                    if (toast) {
+                        toast.style.display = 'flex';
+                        toast.style.background = 'rgba(16, 185, 129, 0.15)';
+                        toast.style.color = 'var(--success)';
+                        toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                        toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
+                    }
+                    setTimeout(() => { window.location.reload(); }, 1000);
+                } else {
+                    if (toast) {
+                        toast.style.display = 'flex';
+                        toast.style.background = 'rgba(239, 68, 68, 0.15)';
+                        toast.style.color = 'var(--error)';
+                        toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                        toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Cancellation failed');
+                    }
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Cancel Booking';
+                    }
                 }
-                setTimeout(() => { window.location.reload(); }, 1000);
-            } else {
+            })
+            .catch(err => {
+                console.error('Error:', err);
                 if (toast) {
                     toast.style.display = 'flex';
                     toast.style.background = 'rgba(239, 68, 68, 0.15)';
                     toast.style.color = 'var(--error)';
                     toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-                    toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Cancellation failed');
+                    toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
                 }
                 if (btn) {
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Cancel Booking';
                 }
-            }
-        })
-        .catch(err => {
-            console.error('Error:', err);
-            if (toast) {
-                toast.style.display = 'flex';
-                toast.style.background = 'rgba(239, 68, 68, 0.15)';
-                toast.style.color = 'var(--error)';
-                toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-                toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
-            }
-            if (btn) {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Cancel Booking';
-            }
-        });
+            });
     }
 </script>
 {% endblock %}

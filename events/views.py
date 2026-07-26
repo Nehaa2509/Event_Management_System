@@ -140,6 +140,7 @@ def event_list(request):
     total_attendees = Registration.objects.filter(event__is_approved=True).count()
     virtual_count = all_approved.filter(event_type='VIRTUAL').count()
     in_person_count = all_approved.filter(event_type='IN_PERSON').count()
+    active_organizers = all_approved.values('organizer').distinct().count()
     
     locations = all_approved.values_list('location', flat=True).distinct()
     categories = Event.CATEGORY_CHOICES
@@ -158,6 +159,7 @@ def event_list(request):
         'total_attendees': total_attendees,
         'virtual_count': virtual_count,
         'in_person_count': in_person_count,
+        'active_organizers': active_organizers,
         'next_event': next_event,
     }
     return render(request, 'events/event_list.html', context)

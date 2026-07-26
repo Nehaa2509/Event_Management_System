@@ -1,790 +1,815 @@
 {% extends 'events/base.html' %}
 {% load static %}
 
-{% block title %}Explore Events | Wiwi Events{% endblock %}
+{% block title %}Wiwi Events — Plan, Host & Manage Events That People Remember{% endblock %}
 
 {% block extra_head %}
 <style>
-    .events-layout {
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 2rem;
-        align-items: start;
-    }
-    
-    /* Elkevent-style Hero Section */
-    .hero-section {
-        min-height: 70vh;
-        background: linear-gradient(135deg, rgba(10, 6, 20, 0.90) 0%, rgba(88, 15, 95, 0.60) 45%, rgba(10, 6, 20, 0.90) 100%),
-                    url("{% static 'images/hero-bg.webp' %}") center center / cover no-repeat;
-        background-blend-mode: multiply, normal;
-        border: 1px solid var(--border-glass);
-        border-radius: 24px;
-        padding: 4rem 3.5rem;
-        margin-bottom: 2.5rem;
-        box-shadow: var(--card-shadow);
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        text-align: left;
-    }
+/* ═══════════════════════════════════════════════════════════
+   Shared Layout Utilities
+═══════════════════════════════════════════════════════════ */
+.lp-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+.lp-section      { padding: 6rem 0; }
+.lp-section-sm   { padding: 4rem 0; }
 
-    @media (min-width: 769px) {
-        .hero-section {
-            background-attachment: scroll, fixed;
-        }
-    }
+.section-eyebrow {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: #4f46e5;
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 999px;
+    padding: 0.3rem 0.9rem;
+    margin-bottom: 1rem;
+}
+.section-headline {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+    color: var(--text-primary);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+.section-sub {
+    color: var(--text-secondary);
+    font-size: 1.03rem;
+    line-height: 1.7;
+    max-width: 540px;
+}
 
-    .hero-eyebrow {
-        font-size: 0.85rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--accent-cyan);
-        margin-bottom: 0.8rem;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
+/* Scroll-reveal */
+.reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-    .hero-title {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        font-size: clamp(2.4rem, 5vw, 4rem);
-        line-height: 1.15;
-        color: #fff;
-        max-width: 850px;
-        margin-bottom: 1rem;
-        text-align: left;
-    }
+/* ═══════════════════════════════════════════════════════════
+   1. HERO
+═══════════════════════════════════════════════════════════ */
+.hero-wrap {
+    background:
+        linear-gradient(135deg, rgba(79,70,229,0.92) 0%, rgba(37,99,235,0.82) 100%),
+        url("{% static 'images/hero-bg.webp' %}") center center / cover no-repeat;
+    background-blend-mode: multiply, normal;
+    position: relative;
+    overflow: hidden;
+}
+.hero-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, #f8fafc);
+    pointer-events: none;
+    z-index: 1;
+}
+.hero-content {
+    padding: 7rem 0 6rem;
+    position: relative;
+    z-index: 2;
+}
+.hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #c7d2fe;
+    border: 1px solid rgba(199,210,254,0.4);
+    border-radius: 999px;
+    padding: 0.35rem 1rem;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+}
+.hero-headline {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+    color: #ffffff;
+    line-height: 1.12;
+    margin-bottom: 1.4rem;
+}
+.hero-headline .grad-text {
+    background: linear-gradient(90deg, #fde68a 0%, #f9a8d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.hero-sub {
+    font-size: 1.08rem;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.7;
+    max-width: 480px;
+    margin-bottom: 2.2rem;
+}
+.hero-cta-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.hero-btn-solid {
+    background: #ffffff;
+    color: #4f46e5;
+    font-weight: 700;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.8rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.hero-btn-solid:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+.hero-btn-outline {
+    background: rgba(255,255,255,0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255,255,255,0.35);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.85rem 1.8rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.hero-btn-outline:hover { background: rgba(255,255,255,0.22); }
 
-    .highlight-word {
-        position: relative;
-        display: inline-block;
-        background: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
+/* ── Product Mockup ── */
+.hero-mockup-side {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.mockup-frame {
+    width: 320px;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 28px 70px rgba(15,23,42,0.30), 0 4px 16px rgba(79,70,229,0.18);
+    overflow: hidden;
+    animation: floatUD 4s ease-in-out infinite;
+}
+@keyframes floatUD {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-12px); }
+}
+.mockup-topbar {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 0.55rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.mkdot { width: 9px; height: 9px; border-radius: 50%; }
+.mkdot-r { background: #fca5a5; }
+.mkdot-y { background: #fde68a; }
+.mkdot-g { background: #a7f3d0; }
+.mkurl {
+    background: #e2e8f0;
+    border-radius: 6px;
+    flex: 1; height: 9px;
+    margin-left: 0.3rem;
+}
+.mockup-body { padding: 1.2rem; }
+.mkcard-img {
+    height: 80px;
+    background: linear-gradient(135deg, #eef2ff 0%, #ede9fe 100%);
+    border-radius: 10px;
+    margin-bottom: 0.9rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem;
+}
+.mkbadge {
+    display: inline-block;
+    background: #eef2ff; color: #4f46e5;
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    padding: 0.18rem 0.55rem; border-radius: 999px;
+    margin-bottom: 0.45rem;
+}
+.mktitle {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 0.9rem;
+    color: #0f172a; margin-bottom: 0.25rem;
+}
+.mkmeta { font-size: 0.74rem; color: #94a3b8; margin-bottom: 0.75rem; }
+.mkcap-row { display: flex; justify-content: space-between; font-size: 0.7rem; color: #475569; margin-bottom: 0.25rem; }
+.mkbar-wrap { height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-bottom: 0.85rem; }
+.mkbar-fill { width: 62%; height: 100%; background: linear-gradient(90deg, #4f46e5, #7c3aed); border-radius: 999px; }
+.mkbtn {
+    display: block; text-align: center;
+    background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%);
+    color: white; font-size: 0.78rem; font-weight: 600;
+    padding: 0.48rem; border-radius: 8px;
+}
+.mkticket { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.5rem; font-size: 0.7rem; color: #059669; font-weight: 600; }
 
-    .highlight-word::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: 2px;
-        width: 100%;
-        height: 8px;
-        background: rgba(249, 115, 22, 0.45);
-        border-radius: 4px;
-        transform: rotate(-1.2deg);
-        z-index: -1;
-    }
+/* ── Stats Strip ── */
+.stats-strip {
+    background: rgba(255,255,255,0.96);
+    border-top: 1px solid #e2e8f0;
+    position: relative; z-index: 3;
+}
+.stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+}
+.stat-item {
+    padding: 1.6rem 2rem;
+    text-align: center;
+    border-right: 1px solid #e2e8f0;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: 2.1rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+.stat-label {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
 
-    .hero-meta-row {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        font-size: 0.95rem;
-        color: var(--text-secondary);
-        margin-bottom: 2rem;
-        flex-wrap: wrap;
-    }
+/* ═══════════════════════════════════════════════════════════
+   3. FEATURES
+═══════════════════════════════════════════════════════════ */
+.features-section { background: #f8fafc; }
+.features-header { text-align: center; margin-bottom: 3.5rem; }
+.features-header .section-sub { margin: 0 auto; }
 
-    .hero-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 500;
-    }
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.4rem;
+}
+.feature-card {
+    background: #ffffff;
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    padding: 1.8rem;
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(15,23,42,0.09);
+    border-color: #c7d2fe;
+}
+.fi-wrap {
+    width: 46px; height: 46px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+.fi-indigo  { background: #eef2ff; color: #4f46e5; }
+.fi-purple  { background: #f5f3ff; color: #7c3aed; }
+.fi-blue    { background: #eff6ff; color: #2563eb; }
+.fi-emerald { background: #ecfdf5; color: #059669; }
+.fi-orange  { background: #fff7ed; color: #ea580c; }
+.fi-cyan    { background: #ecfeff; color: #0891b2; }
 
-    .hero-ctas {
-        display: flex;
-        align-items: center;
-        gap: 1.2rem;
-        margin-bottom: 2.5rem;
-        flex-wrap: wrap;
-    }
+.feature-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--text-primary); margin-bottom: 0.45rem;
+}
+.feature-desc { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; }
 
-    .hero-btn-main {
-        padding: 0.85rem 2rem !important;
-        font-size: 1.05rem !important;
-        border-radius: 50px !important;
-        box-shadow: 0 8px 25px rgba(219, 39, 119, 0.4) !important;
-    }
+/* ═══════════════════════════════════════════════════════════
+   4. HOW IT WORKS
+═══════════════════════════════════════════════════════════ */
+.how-section { background: #ffffff; }
+.how-header { text-align: center; margin-bottom: 3.5rem; }
+.how-header .section-sub { margin: 0 auto; }
 
-    .hero-btn-secondary {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        color: var(--text-primary);
-        font-weight: 600;
-        font-size: 1rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
+.how-row {
+    display: grid;
+    grid-template-columns: 1fr 48px 1fr 48px 1fr;
+    align-items: start;
+    gap: 0;
+}
+.how-step { text-align: center; padding: 0 1rem; }
+.how-num {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: 2.8rem;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1; margin-bottom: 0.9rem;
+}
+.how-icon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: #eef2ff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; color: #4f46e5;
+    margin: 0 auto 0.9rem;
+}
+.how-step-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--text-primary); margin-bottom: 0.4rem;
+}
+.how-step-desc { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.6; }
+.how-connector {
+    display: flex; align-items: center; justify-content: center;
+    padding-top: 1.8rem;
+}
+.how-line { border-top: 2px dashed #c7d2fe; width: 100%; }
 
-    .hero-btn-secondary:hover {
-        color: var(--accent-cyan);
-    }
+/* ═══════════════════════════════════════════════════════════
+   5. BROWSE EVENTS
+═══════════════════════════════════════════════════════════ */
+.browse-section { background: #f8fafc; }
+.browse-header { margin-bottom: 2.5rem; }
+.events-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+.filter-sidebar {
+    position: sticky;
+    top: 90px;
+}
+.sidebar-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--text-primary);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+}
 
-    .hero-btn-secondary .icon-circle {
-        width: 44px;
-        height: 44px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid var(--border-glass);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--accent-pink);
-        font-size: 1.1rem;
-        transition: all 0.3s ease;
-    }
+/* Pills */
+.filter-pills {
+    display: flex; flex-wrap: wrap;
+    gap: 0.5rem; margin-bottom: 1.5rem;
+}
+.pill-link {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-glass);
+    padding: 0.35rem 0.9rem;
+    border-radius: 999px; font-size: 0.8rem; font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.pill-link:hover, .pill-link.active {
+    background: #eef2ff; border-color: #c7d2fe; color: #4f46e5;
+}
+.pill-link.active { font-weight: 700; }
 
-    .hero-btn-secondary:hover .icon-circle {
-        background: var(--accent-gradient);
-        color: #fff;
-        box-shadow: 0 0 20px rgba(219, 39, 119, 0.5);
-        transform: scale(1.05);
-    }
+/* Event Grid & Cards */
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 1.4rem;
+}
+.event-card {
+    background: #ffffff;
+    border: 1px solid var(--border-glass);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 2px 8px rgba(15,23,42,0.05);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(15,23,42,0.10);
+    border-color: #c7d2fe;
+}
+.event-header { padding: 1.2rem 1.2rem 0.5rem; }
+.badge-bar { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.event-badge {
+    font-size: 0.68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0.18rem 0.55rem; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 0.3rem;
+}
+.badge-category { background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe; }
+.badge-virtual   { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
+.badge-in_person { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+.event-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--text-primary); line-height: 1.3;
+}
+.event-body { padding: 0.7rem 1.2rem; flex: 1; }
+.event-desc { font-size: 0.87rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.7rem; }
+.speaker-box {
+    display: flex; align-items: center; gap: 0.65rem;
+    margin-bottom: 0.7rem; padding: 0.55rem;
+    background: #f8fafc; border-radius: 8px;
+    border: 1px solid var(--border-glass);
+}
+.speaker-avatar {
+    width: 30px; height: 30px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.8rem; color: white; flex-shrink: 0;
+}
+.speaker-name { font-size: 0.83rem; font-weight: 600; color: var(--text-primary); }
+.speaker-role { font-size: 0.75rem; color: var(--text-secondary); }
+.event-meta { display: flex; flex-direction: column; gap: 0.3rem; }
+.meta-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.8rem; color: var(--text-secondary);
+}
+.meta-item i { color: #4f46e5; width: 14px; flex-shrink: 0; }
+.event-footer { padding: 0.9rem 1.2rem; border-top: 1px solid var(--border-glass); }
+.capacity-text {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.35rem;
+}
+.slots-badge {
+    font-size: 0.7rem; font-weight: 700;
+    text-transform: uppercase; padding: 0.15rem 0.55rem; border-radius: 999px;
+}
+.slots-available { background: #ecfdf5; color: #059669; }
+.slots-full      { background: #fef2f2; color: #dc2626; }
+.capacity-bar-container { height: 5px; background: #e2e8f0; border-radius: 999px; overflow: hidden; }
+.capacity-bar {
+    height: 100%;
+    background: var(--accent-gradient);
+    border-radius: 999px;
+    transition: width 0.5s ease;
+}
+.no-events { text-align: center; padding: 4rem 2rem; color: var(--text-secondary); }
+.no-events i { font-size: 2.8rem; color: var(--text-muted); margin-bottom: 1rem; display: block; }
+.btn-create {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--accent-gradient); color: white;
+    padding: 0.7rem 1.4rem; border-radius: 10px; font-weight: 600;
+    text-decoration: none; margin-top: 1rem; transition: opacity 0.2s;
+}
+.btn-create:hover { opacity: 0.9; }
 
-    /* Live Countdown Box */
-    .countdown-container {
-        width: 100%;
-        max-width: 680px;
-        background: rgba(24, 16, 38, 0.65);
-        border: 1px solid var(--border-glass);
-        border-radius: 18px;
-        padding: 1.2rem 1.8rem;
-        backdrop-filter: blur(14px);
-    }
+/* ═══════════════════════════════════════════════════════════
+   6. CTA BANNER
+═══════════════════════════════════════════════════════════ */
+.cta-band {
+    background: var(--accent-gradient);
+    padding: 5.5rem 0;
+    text-align: center;
+}
+.cta-band-h {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: #ffffff; margin-bottom: 0.7rem;
+}
+.cta-band-sub { color: rgba(255,255,255,0.82); font-size: 1.05rem; margin-bottom: 2rem; }
+.cta-band-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: #ffffff;
+    color: #4f46e5 !important;
+    font-weight: 700; font-size: 0.95rem;
+    padding: 0.9rem 2.2rem; border-radius: 10px;
+    text-decoration: none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    transition: all 0.25s ease;
+}
+.cta-band-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
 
-    .countdown-title {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--text-muted);
-        margin-bottom: 0.8rem;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
+/* ═══════════════════════════════════════════════════════════
+   Responsive
+═══════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .features-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-mockup-side { display: none; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+    .stat-item { border-right: none; border-bottom: 1px solid #e2e8f0; }
+    .stat-item:last-child, .stat-item:nth-child(2) { border-bottom: none; }
+}
+@media (max-width: 768px) {
+    .lp-section { padding: 4rem 0; }
+    .features-grid { grid-template-columns: 1fr; }
+    .how-row { grid-template-columns: 1fr; gap: 2rem; }
+    .how-connector { display: none; }
+    .events-layout { grid-template-columns: 1fr; }
+    .filter-sidebar { position: relative; top: 0; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); }
+}
 
-    .countdown-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-        text-align: center;
-    }
-
-    .cd-block {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .cd-val {
-        font-family: 'Outfit', sans-serif;
-        font-size: 2.2rem;
-        font-weight: 800;
-        line-height: 1;
-    }
-
-    .cd-lbl {
-        font-size: 0.72rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
-        margin-top: 0.3rem;
-        font-weight: 600;
-    }
-
-    /* "Join the Event" Section */
-    .join-section {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-glass);
-        border-radius: 20px;
-        padding: 3rem 2.5rem;
-        margin-bottom: 2.5rem;
-        box-shadow: var(--card-shadow);
-    }
-
-    .join-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2.5rem;
-        align-items: center;
-    }
-
-    .join-eyebrow {
-        font-size: 0.8rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--accent-pink);
-        margin-bottom: 0.5rem;
-    }
-
-    .join-title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 2.2rem;
-        font-weight: 800;
-        color: var(--text-primary);
-        line-height: 1.25;
-        margin-bottom: 1rem;
-    }
-
-    .join-desc {
-        color: var(--text-secondary);
-        font-size: 1rem;
-        line-height: 1.6;
-    }
-
-    .join-stats-card {
-        background: linear-gradient(135deg, rgba(162, 28, 175, 0.2) 0%, rgba(219, 39, 119, 0.2) 50%, rgba(249, 115, 22, 0.2) 100%);
-        border: 1px solid rgba(236, 72, 153, 0.3);
-        border-radius: 18px;
-        padding: 2rem;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-        text-align: center;
-    }
-
-    .join-stat-num {
-        font-family: 'Outfit', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 800;
-        background: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .join-stat-label {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        font-weight: 600;
-        margin-top: 0.2rem;
-    }
-
-    @media (max-width: 768px) {
-        .hero-section {
-            padding: 2.5rem 1.5rem;
-            min-height: auto;
-            align-items: center;
-            text-align: center;
-        }
-        .hero-title {
-            text-align: center;
-        }
-        .hero-meta-row {
-            justify-content: center;
-        }
-        .hero-ctas {
-            justify-content: center;
-        }
-        .countdown-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.2rem;
-        }
-    /* Filter Pills */
-    .filter-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .pill-link {
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--text-secondary);
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid var(--border-glass);
-        transition: all 0.3s ease;
-    }
-
-    .pill-link:hover, .pill-link.active {
-        color: white;
-        background: rgba(219, 39, 119, 0.25);
-        border-color: var(--accent-pink);
-        box-shadow: 0 0 15px rgba(219, 39, 119, 0.3);
-    }
-    
-    /* Filters Sidebar */
-    .filter-sidebar {
-        position: sticky;
-        top: 90px;
-        background: var(--bg-card);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid var(--border-glass);
-        border-radius: 16px;
-        padding: 1.5rem;
-        box-shadow: var(--card-shadow);
-    }
-    
-    .sidebar-title {
-        font-size: 1.25rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--border-glass);
-        padding-bottom: 0.75rem;
-        color: var(--text-primary);
-    }
-    
-    /* Event Grid */
-    .event-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.5rem;
-    }
-    
-    .event-card {
-        background: var(--bg-card);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--border-glass);
-        border-radius: 16px;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        box-shadow: var(--card-shadow);
-    }
-    
-    .event-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(219, 39, 119, 0.4);
-        box-shadow: 0 12px 30px rgba(219, 39, 119, 0.2);
-    }
-    
-    .event-header {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--border-glass);
-    }
-
-    .badge-bar {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-bottom: 0.8rem;
-    }
-    
-    .event-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-    
-    .badge-approved {
-        background: rgba(52, 211, 153, 0.15);
-        color: var(--success);
-        border: 1px solid rgba(52, 211, 153, 0.3);
-    }
-
-    .badge-category {
-        background: rgba(162, 28, 175, 0.18);
-        color: #a21caf;
-        border: 1px solid rgba(162, 28, 175, 0.3);
-    }
-
-    .badge-virtual {
-        background: rgba(219, 39, 119, 0.15);
-        color: #db2777;
-        border: 1px solid rgba(219, 39, 119, 0.3);
-    }
-
-    .badge-in_person {
-        background: rgba(52, 211, 153, 0.15);
-        color: var(--success);
-        border: 1px solid rgba(52, 211, 153, 0.3);
-    }
-    
-    .event-title {
-        font-family: 'Outfit', sans-serif;
-        font-size: 1.35rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        line-height: 1.3;
-        margin-top: 0.3rem;
-    }
-    
-    .event-body {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        gap: 1.2rem;
-    }
-    
-    .event-desc {
-        color: var(--text-secondary);
-        font-size: 0.93rem;
-        line-height: 1.55;
-        flex-grow: 1;
-        margin: 0;
-    }
-
-    .speaker-box {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        background: rgba(24, 16, 38, 0.6);
-        border: 1px solid var(--border-glass);
-        border-radius: 12px;
-        padding: 0.65rem 0.9rem;
-    }
-
-    .speaker-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: var(--accent-gradient);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 800;
-        font-size: 0.9rem;
-        flex-shrink: 0;
-    }
-
-    .speaker-name {
-        color: var(--text-primary);
-        font-weight: 600;
-        font-size: 0.88rem;
-        line-height: 1.2;
-    }
-
-    .speaker-role {
-        font-size: 0.76rem;
-        color: var(--text-muted);
-        line-height: 1.2;
-        margin-top: 0.15rem;
-    }
-    
-    .event-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 0.65rem;
-        font-size: 0.88rem;
-        color: var(--text-secondary);
-        border-top: 1px solid var(--border-glass);
-        padding-top: 1rem;
-    }
-    
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.65rem;
-    }
-    
-    .meta-item i {
-        color: var(--accent-cyan);
-        width: 18px;
-        text-align: center;
-        font-size: 0.95rem;
-    }
-
-    .meta-item strong {
-        color: var(--text-primary);
-    }
-    
-    .event-footer {
-        padding: 1.2rem 1.5rem 1.5rem 1.5rem;
-        border-top: 1px solid var(--border-glass);
-        background: rgba(255, 255, 255, 0.01);
-    }
-    
-    .capacity-bar-container {
-        width: 100%;
-        height: 6px;
-        background: rgba(255, 255, 255, 0.06);
-        border-radius: 10px;
-        margin-top: 0.6rem;
-        overflow: hidden;
-    }
-    
-    .capacity-bar {
-        height: 100%;
-        background: var(--accent-gradient);
-        border-radius: 10px;
-        transition: width 0.5s ease;
-    }
-    
-    .capacity-text {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.83rem;
-        color: var(--text-secondary);
-        margin-bottom: 0.4rem;
-        font-weight: 500;
-    }
-
-    .capacity-text strong {
-        color: var(--text-primary);
-        font-weight: 700;
-    }
-
-    .slots-badge {
-        font-size: 0.76rem;
-        font-weight: 700;
-        padding: 0.2rem 0.65rem;
-        border-radius: 50px;
-        letter-spacing: 0.03em;
-    }
-
-    .slots-available {
-        background: rgba(249, 115, 22, 0.15);
-        color: var(--accent-cyan);
-        border: 1px solid rgba(249, 115, 22, 0.3);
-    }
-
-    .slots-full {
-        background: rgba(251, 113, 133, 0.15);
-        color: var(--error);
-        border: 1px solid rgba(251, 113, 133, 0.3);
-    }
-    
-    .no-events {
-        text-align: center;
-        padding: 4rem 2rem;
-    }
-    
-    .no-events i {
-        font-size: 4rem;
-        background: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1.5rem;
-    }
-    
-    .no-events h3 {
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .no-events p {
-        color: var(--text-secondary);
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 992px) {
-        .events-layout {
-            grid-template-columns: 1fr;
-        }
-        .filter-sidebar {
-            position: relative;
-            top: 0;
-            margin-bottom: 2rem;
-        }
-    }
+/* Override base container for full-bleed landing page layout */
+body > div.container {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
 </style>
 {% endblock %}
 
 {% block content %}
-<!-- ── Elkevent-style Hero Section ── -->
-<div class="hero-section">
-    <div class="hero-eyebrow">
-        <i class="fa-solid fa-sparkles"></i> ARE YOU READY TO <span style="color: var(--accent-pink);">ATTEND?</span>
-    </div>
-    
-    <h1 class="hero-title">
-        Discover Exceptional <span class="highlight-word">Events</span>
-    </h1>
 
-    <div class="hero-meta-row">
-        {% if next_event %}
-            <span class="hero-meta-item">
-                <i class="fa-solid fa-location-dot" style="color: var(--accent-cyan);"></i> {{ next_event.location }}
-            </span>
-            <span class="hero-meta-item">
-                <i class="fa-solid fa-calendar-days" style="color: var(--accent-pink);"></i> {{ next_event.date|date:"F j, Y — g:i A" }}
-            </span>
-        {% else %}
-            <span class="hero-meta-item">
-                <i class="fa-solid fa-earth-americas" style="color: var(--accent-cyan);"></i> Events Worldwide
-            </span>
-            <span class="hero-meta-item">
-                <i class="fa-solid fa-fire" style="color: var(--accent-pink);"></i> New Events Added Weekly
-            </span>
-        {% endif %}
-    </div>
-
-    <div class="hero-ctas">
-        <a href="#events-grid" class="btn-primary hero-btn-main">
-            <i class="fa-solid fa-compass"></i> Explore Events
-        </a>
-        <a href="#how-it-works" class="hero-btn-secondary">
-            <span class="icon-circle"><i class="fa-solid fa-ticket"></i></span> How It Works
-        </a>
-    </div>
-
-    <!-- Live Countdown Row -->
-    {% if next_event %}
-        <div class="countdown-container" id="countdown-timer" data-event-date="{{ next_event.date|date:'c' }}">
-            <div class="countdown-title">
-                <i class="fa-solid fa-stopwatch" style="color: var(--accent-pink);"></i> Next Upcoming Event Starts In:
-            </div>
-            <div class="countdown-grid">
-                <div class="cd-block">
-                    <div class="cd-val" id="cd-days" style="color: #db2777;">00</div>
-                    <div class="cd-lbl">Days</div>
+<!-- ─────────────────────────────────────────────────────────
+     1. HERO
+───────────────────────────────────────────────────────── -->
+<div class="hero-wrap">
+    <div class="hero-content">
+        <div class="lp-inner">
+            <div class="hero-inner">
+                <!-- Left copy -->
+                <div>
+                    <div class="hero-pill">
+                        <i class="fa-solid fa-bolt-lightning"></i>
+                        Event Management, Simplified
+                    </div>
+                    <h1 class="hero-headline">
+                        Plan, Host &amp; Manage Events That <span class="grad-text">People Remember</span>
+                    </h1>
+                    <p class="hero-sub">
+                        Wiwi Events brings registration, ticketing, and approvals into one streamlined platform — built on Django with real capacity locking, auto-generated QR passes, and instant seat tracking.
+                    </p>
+                    <div class="hero-cta-row">
+                        <a href="{% url 'register' %}" class="hero-btn-solid">
+                            <i class="fa-solid fa-user-plus"></i> Get Started Free
+                        </a>
+                        <a href="#browse-events" class="hero-btn-outline">
+                            <i class="fa-solid fa-calendar-days"></i> Browse Events
+                        </a>
+                    </div>
                 </div>
-                <div class="cd-block">
-                    <div class="cd-val" id="cd-hours" style="color: #f97316;">00</div>
-                    <div class="cd-lbl">Hours</div>
-                </div>
-                <div class="cd-block">
-                    <div class="cd-val" id="cd-minutes" style="color: #facc15;">00</div>
-                    <div class="cd-lbl">Minutes</div>
-                </div>
-                <div class="cd-block">
-                    <div class="cd-val" id="cd-seconds" style="color: #a21caf;">00</div>
-                    <div class="cd-lbl">Seconds</div>
+                <!-- Right: CSS-only product mockup -->
+                <div class="hero-mockup-side">
+                    <div class="mockup-frame">
+                        <div class="mockup-topbar">
+                            <div class="mkdot mkdot-r"></div>
+                            <div class="mkdot mkdot-y"></div>
+                            <div class="mkdot mkdot-g"></div>
+                            <div class="mkurl"></div>
+                        </div>
+                        <div class="mockup-body">
+                            <div class="mkcard-img">🎤</div>
+                            <div class="mkbadge">Conference</div>
+                            <div class="mktitle">AI &amp; Full-Stack Summit 2026</div>
+                            <div class="mkmeta">
+                                <i class="fa-solid fa-calendar-day" style="color:#4f46e5; font-size:0.7rem;"></i>
+                                Aug 15, 2026 · New Delhi
+                            </div>
+                            <div class="mkcap-row">
+                                <span>Seats reserved: 62/100</span>
+                                <span style="color:#059669; font-weight:700;">38 left</span>
+                            </div>
+                            <div class="mkbar-wrap">
+                                <div class="mkbar-fill"></div>
+                            </div>
+                            <div class="mkbtn">View Event Pass &amp; Register</div>
+                            <div class="mkticket">
+                                <i class="fa-solid fa-ticket"></i> Instant QR ticket on registration
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    {% else %}
-        <div class="countdown-container" style="text-align: center; color: var(--text-secondary);">
-            <i class="fa-solid fa-calendar-plus" style="color: var(--accent-pink); font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
-            No upcoming events scheduled yet — 
-            {% if user.is_authenticated %}
-                <a href="{% url 'create_event' %}" style="color: var(--accent-cyan); font-weight: 700;">Host the first one!</a>
-            {% else %}
-                <a href="{% url 'login' %}" style="color: var(--accent-cyan); font-weight: 700;">Log in to host an event!</a>
-            {% endif %}
-        </div>
-    {% endif %}
-</div>
+    </div>
 
-<!-- ── Join The Event Info Section ── -->
-<div class="join-section" id="how-it-works">
-    <div class="join-grid">
-        <div>
-            <div class="join-eyebrow">JOIN THE EVENT</div>
-            <h2 class="join-title">We Create <span class="highlight-word">Memorable</span> Experiences</h2>
-            <p class="join-desc">
-                Wiwi Events connects passionate tech communities, industry leaders, and creators through premier tech summits, hands-on coding workshops, and interactive keynotes worldwide.
-            </p>
-            <p class="join-desc" style="margin-top: 0.8rem;">
-                Whether you're organizing an international summit or looking to register for your next learning milestone, our platform provides instant e-tickets, verified QR-code entry passes, and real-time seat management.
-            </p>
-        </div>
-        <div class="join-stats-card">
-            <div>
-                <div class="join-stat-num">{{ total_attendees }}</div>
-                <div class="join-stat-label">Attendees Welcomed</div>
-            </div>
-            <div>
-                <div class="join-stat-num">{{ total_events }}</div>
-                <div class="join-stat-label">Events Hosted</div>
+    <!-- Stats strip -->
+    <div class="stats-strip">
+        <div class="lp-inner">
+            <div class="stats-inner">
+                <div class="stat-item reveal">
+                    <div class="stat-num">{{ total_events }}</div>
+                    <div class="stat-label">Events Hosted</div>
+                </div>
+                <div class="stat-item reveal" style="transition-delay:0.1s;">
+                    <div class="stat-num">{{ total_attendees }}</div>
+                    <div class="stat-label">Total Registrations</div>
+                </div>
+                <div class="stat-item reveal" style="transition-delay:0.2s;">
+                    <div class="stat-num">{{ virtual_count }}</div>
+                    <div class="stat-label">Virtual Events</div>
+                </div>
+                <div class="stat-item reveal" style="transition-delay:0.3s;">
+                    <div class="stat-num">{{ active_organizers }}</div>
+                    <div class="stat-label">Active Organizers</div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="events-layout" id="events-grid">
-    <!-- Filters Sidebar -->
-    <div class="filter-sidebar glass-card">
-        <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Filter & Search</h3>
-        <form method="GET" action="{% url 'event_list' %}">
-            <div class="form-group">
-                <label for="q" class="form-label">Search Keyword</label>
-                <input type="text" name="q" id="q" class="form-control" placeholder="Title, speaker, topic..." value="{{ query }}">
+
+<!-- ─────────────────────────────────────────────────────────
+     3. FEATURES GRID
+───────────────────────────────────────────────────────── -->
+<section class="lp-section features-section">
+    <div class="lp-inner">
+        <div class="features-header reveal">
+            <div class="section-eyebrow">What's Inside</div>
+            <h2 class="section-headline">Everything You Need to Run an Event</h2>
+            <p class="section-sub">Six production-grade features baked into a single Django-powered platform — no third-party seat-management or ticketing services required.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <div class="fi-wrap fi-indigo"><i class="fa-solid fa-lock"></i></div>
+                <div class="feature-title">Secure Registration</div>
+                <p class="feature-desc">Capacity is enforced at the database level with row-level locking — zero overbooking, even under concurrent load.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay:0.07s;">
+                <div class="fi-wrap fi-purple"><i class="fa-solid fa-qrcode"></i></div>
+                <div class="feature-title">Instant QR Tickets</div>
+                <p class="feature-desc">Every registration generates a unique, scannable QR ticket pass — printable and shareable immediately after booking.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay:0.14s;">
+                <div class="fi-wrap fi-blue"><i class="fa-solid fa-shield-check"></i></div>
+                <div class="feature-title">Organizer Approval Workflow</div>
+                <p class="feature-desc">New events go through staff review before going live, keeping event quality high and spam off the platform.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay:0.07s;">
+                <div class="fi-wrap fi-emerald"><i class="fa-solid fa-users-rectangle"></i></div>
+                <div class="feature-title">Role-Based Dashboards</div>
+                <p class="feature-desc">Attendees see their registrations and tickets; organizers manage events — all from context-aware, separate views.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay:0.14s;">
+                <div class="fi-wrap fi-orange"><i class="fa-solid fa-gauge-high"></i></div>
+                <div class="feature-title">Real-Time Seat Tracking</div>
+                <p class="feature-desc">Live "slots left" counter on every event card updates as registrations come in — attendees always see accurate availability.</p>
+            </div>
+            <div class="feature-card reveal" style="transition-delay:0.21s;">
+                <div class="fi-wrap fi-cyan"><i class="fa-solid fa-sliders"></i></div>
+                <div class="feature-title">Category &amp; Format Filters</div>
+                <p class="feature-desc">Filter by Conference, Workshop, Hackathon, Webinar, and more — combined with Virtual / Hybrid / In-Person format selectors.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ─────────────────────────────────────────────────────────
+     4. HOW IT WORKS
+───────────────────────────────────────────────────────── -->
+<section class="lp-section how-section">
+    <div class="lp-inner">
+        <div class="how-header reveal">
+            <div class="section-eyebrow">Getting Started</div>
+            <h2 class="section-headline">From Sign-Up to Seat in 3 Steps</h2>
+            <p class="section-sub">No setup fees, no complicated onboarding — just create an account and you're in.</p>
+        </div>
+        <div class="how-row">
+            <div class="how-step reveal">
+                <div class="how-num">01</div>
+                <div class="how-icon"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="how-step-title">Create an Account</div>
+                <p class="how-step-desc">Sign up with a username and email. No payment details needed to get started.</p>
+            </div>
+            <div class="how-connector reveal">
+                <div class="how-line"></div>
+            </div>
+            <div class="how-step reveal" style="transition-delay:0.1s;">
+                <div class="how-num">02</div>
+                <div class="how-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                <div class="how-step-title">Browse or Host an Event</div>
+                <p class="how-step-desc">Explore approved events by category, location, and format — or submit your own for staff review.</p>
+            </div>
+            <div class="how-connector reveal" style="transition-delay:0.1s;">
+                <div class="how-line"></div>
+            </div>
+            <div class="how-step reveal" style="transition-delay:0.2s;">
+                <div class="how-num">03</div>
+                <div class="how-icon"><i class="fa-solid fa-ticket"></i></div>
+                <div class="how-step-title">Register &amp; Get Your QR Ticket</div>
+                <p class="how-step-desc">Click register, pick your seat count, and receive a scannable QR pass instantly — no waiting.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ─────────────────────────────────────────────────────────
+     5. BROWSE EVENTS
+───────────────────────────────────────────────────────── -->
+<section class="lp-section browse-section" id="browse-events">
+    <div class="lp-inner">
+        <div class="browse-header reveal">
+            <div class="section-eyebrow">Live on Platform</div>
+            <h2 class="section-headline">Upcoming Events</h2>
+            <p class="section-sub">All events listed here are reviewed and approved. Use the filters to find your next experience.</p>
+        </div>
+
+        <div class="events-layout">
+            <!-- Filter Sidebar -->
+            <div class="filter-sidebar glass-card">
+                <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Filter &amp; Search</h3>
+                <form method="GET" action="{% url 'event_list' %}">
+                    <div class="form-group">
+                        <label for="q" class="form-label">Search Keyword</label>
+                        <input type="text" name="q" id="q" class="form-control" placeholder="Title, speaker, topic..."
+                            value="{{ query }}">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="category" class="form-label">Category</label>
+                        <select name="category" id="category" class="form-control"
+                            style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass);">
+                            <option value="">All Categories</option>
+                            {% for val, label in categories %}
+                            <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event_type" class="form-label">Format</label>
+                        <select name="event_type" id="event_type" class="form-control"
+                            style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass);">
+                            <option value="">All Formats</option>
+                            <option value="IN_PERSON" {% if event_type_filter == 'IN_PERSON' %}selected{% endif %}>In-Person</option>
+                            <option value="VIRTUAL" {% if event_type_filter == 'VIRTUAL' %}selected{% endif %}>Virtual</option>
+                            <option value="HYBRID" {% if event_type_filter == 'HYBRID' %}selected{% endif %}>Hybrid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location" class="form-label">Location</label>
+                        <select name="location" id="location" class="form-control"
+                            style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass);">
+                            <option value="">All Locations</option>
+                            {% for loc in locations %}
+                            <option value="{{ loc }}" {% if location_filter == loc %}selected{% endif %}>{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" name="date" id="date" class="form-control" value="{{ date_filter }}">
+                    </div>
+
+                    <button type="submit" class="btn-primary" style="margin-bottom: 0.8rem; width: 100%;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Apply Filters
+                    </button>
+                    <a href="{% url 'event_list' %}" class="btn-secondary"
+                        style="display: flex; justify-content: center; align-items: center; width: 100%;">
+                        Reset Filters
+                    </a>
+                </form>
             </div>
 
-            <div class="form-group">
-                <label for="category" class="form-label">Category</label>
-                <select name="category" id="category" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
-                    <option value="">All Categories</option>
+            <!-- Events Main -->
+            <div>
+                <!-- Category Quick Pills -->
+                <div class="filter-pills">
+                    <a href="{% url 'event_list' %}" class="pill-link {% if not category_filter %}active{% endif %}">
+                        <i class="fa-solid fa-layer-group"></i> All
+                    </a>
                     {% for val, label in categories %}
-                        <option value="{{ val }}" {% if category_filter == val %}selected{% endif %}>{{ label }}</option>
+                    <a href="{% url 'event_list' %}?category={{ val }}"
+                        class="pill-link {% if category_filter == val %}active{% endif %}">
+                        {{ label }}
+                    </a>
                     {% endfor %}
-                </select>
-            </div>
+                </div>
 
-            <div class="form-group">
-                <label for="event_type" class="form-label">Format</label>
-                <select name="event_type" id="event_type" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
-                    <option value="">All Formats</option>
-                    <option value="IN_PERSON" {% if event_type_filter == 'IN_PERSON' %}selected{% endif %}>In-Person</option>
-                    <option value="VIRTUAL" {% if event_type_filter == 'VIRTUAL' %}selected{% endif %}>Virtual</option>
-                    <option value="HYBRID" {% if event_type_filter == 'HYBRID' %}selected{% endif %}>Hybrid</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="location" class="form-label">Location</label>
-                <select name="location" id="location" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);">
-                    <option value="">All Locations</option>
-                    {% for loc in locations %}
-                        <option value="{{ loc }}" {% if location_filter == loc %}selected{% endif %}>{{ loc }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="date" class="form-label">Date</label>
-                <input type="date" name="date" id="date" class="form-control" value="{{ date_filter }}">
-            </div>
-            
-            <button type="submit" class="btn-primary" style="margin-bottom: 0.8rem; width: 100%;">
-                <i class="fa-solid fa-magnifying-glass"></i> Apply Filters
-            </button>
-            <a href="{% url 'event_list' %}" class="btn-secondary" style="display: flex; justify-content: center; align-items: center; width: 100%;">
-                Reset Filters
-            </a>
-        </form>
-    </div>
-
-    <!-- Events Main Section -->
-    <div>
-        <!-- Category Quick Pills -->
-        <div class="filter-pills">
-            <a href="{% url 'event_list' %}" class="pill-link {% if not category_filter %}active{% endif %}">
-                <i class="fa-solid fa-layer-group"></i> All
-            </a>
-            {% for val, label in categories %}
-                <a href="{% url 'event_list' %}?category={{ val }}" class="pill-link {% if category_filter == val %}active{% endif %}">
-                    {{ label }}
-                </a>
-            {% endfor %}
-        </div>
-
-        {% if events %}
-            <div class="event-grid">
-                {% for event in events %}
+                {% if events %}
+                <div class="event-grid">
+                    {% for event in events %}
                     <div class="event-card">
-                        <!-- Banner image or gradient placeholder -->
                         {% if event.image %}
-                            <div style="height: 160px; overflow: hidden; border-radius: 14px 14px 0 0;">
-                                <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
-                                    style="width: 100%; height: 100%; object-fit: cover; display: block;">
-                            </div>
+                        <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
+                            <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
+                                style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        </div>
                         {% else %}
-                            <div style="height: 120px; background: linear-gradient(135deg, rgba(124,58,237,0.35) 0%, rgba(6,182,212,0.25) 50%, rgba(236,72,153,0.3) 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
-                                <i class="fa-solid fa-calendar-star" style="font-size: 2.5rem; opacity: 0.4; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;"></i>
-                            </div>
+                        <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-calendar-star" style="font-size: 2.2rem; color: #c7d2fe;"></i>
+                        </div>
                         {% endif %}
 
                         <div class="event-header">
@@ -793,33 +818,31 @@
                                     <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
                                 </span>
                                 {% if event.event_type == 'VIRTUAL' %}
-                                    <span class="event-badge badge-virtual"><i class="fa-solid fa-video"></i> Virtual</span>
+                                <span class="event-badge badge-virtual"><i class="fa-solid fa-video"></i> Virtual</span>
                                 {% elif event.event_type == 'HYBRID' %}
-                                    <span class="event-badge badge-category"><i class="fa-solid fa-network-wired"></i> Hybrid</span>
+                                <span class="event-badge badge-category"><i class="fa-solid fa-network-wired"></i> Hybrid</span>
                                 {% else %}
-                                    <span class="event-badge badge-in_person"><i class="fa-solid fa-building"></i> In-Person</span>
+                                <span class="event-badge badge-in_person"><i class="fa-solid fa-building"></i> In-Person</span>
                                 {% endif %}
                             </div>
                             <h3 class="event-title">{{ event.title }}</h3>
                         </div>
-                        
+
                         <div class="event-body">
                             <p class="event-desc">{{ event.description|truncatewords:18 }}</p>
-                            
+
                             {% if event.speaker_name %}
-                                <div class="speaker-box">
-                                    <div class="speaker-avatar">
-                                        {{ event.speaker_name|slice:":1"|upper }}
-                                    </div>
-                                    <div>
-                                        <div class="speaker-name">{{ event.speaker_name }}</div>
-                                        {% if event.speaker_role %}
-                                            <div class="speaker-role">{{ event.speaker_role }}</div>
-                                        {% endif %}
-                                    </div>
+                            <div class="speaker-box">
+                                <div class="speaker-avatar">{{ event.speaker_name|slice:":1"|upper }}</div>
+                                <div>
+                                    <div class="speaker-name">{{ event.speaker_name }}</div>
+                                    {% if event.speaker_role %}
+                                    <div class="speaker-role">{{ event.speaker_role }}</div>
+                                    {% endif %}
                                 </div>
+                            </div>
                             {% endif %}
-                            
+
                             <div class="event-meta">
                                 <div class="meta-item">
                                     <i class="fa-solid fa-calendar-day"></i>
@@ -838,101 +861,108 @@
 
                         <div class="event-footer">
                             <div class="capacity-text">
-                                <span><i class="fa-solid fa-users" style="color: var(--accent-pink); margin-right: 0.35rem;"></i> Reserved: <strong>{{ event.registrations.count }}</strong> / {{ event.capacity }}</span>
+                                <span><i class="fa-solid fa-users" style="color:#4f46e5; margin-right:0.3rem;"></i>
+                                    <strong>{{ event.registrations.count }}</strong> / {{ event.capacity }} seats</span>
                                 {% if event.registrations.count >= event.capacity %}
-                                    <span class="slots-badge slots-full">FULL</span>
+                                <span class="slots-badge slots-full">FULL</span>
                                 {% else %}
-                                    <span class="slots-badge slots-available">{{ event.slots_left }} left</span>
+                                <span class="slots-badge slots-available">{{ event.slots_left }} left</span>
                                 {% endif %}
                             </div>
                             <div class="capacity-bar-container">
-                                <div class="capacity-bar" style="width: {% widthratio event.registrations.count event.capacity 100 %}%"></div>
+                                <div class="capacity-bar"
+                                    style="width: {% widthratio event.registrations.count event.capacity 100 %}%"></div>
                             </div>
-                            
-                            <a href="{% url 'event_detail' event.pk %}" class="btn-primary" style="display: block; text-align: center; margin-top: 1.2rem; text-decoration: none;">
-                                View Event Pass & Register
+                            <a href="{% url 'event_detail' event.pk %}" class="btn-primary"
+                                style="display: block; text-align: center; margin-top: 1rem; text-decoration: none;">
+                                View Event &amp; Register
                             </a>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                    {% endfor %}
+                </div>
 
-            {% if page_obj.has_other_pages %}
-                <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                {% if page_obj.has_other_pages %}
+                <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2.5rem; flex-wrap: wrap;">
                     {% if page_obj.has_previous %}
-                        <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
-                            <i class="fa-solid fa-chevron-left"></i> Previous
-                        </a>
+                    <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}"
+                        class="btn-secondary" style="padding: 0.5rem 1rem;">
+                        <i class="fa-solid fa-chevron-left"></i> Previous
+                    </a>
                     {% endif %}
 
                     {% for i in page_obj.paginator.page_range %}
-                        {% if page_obj.number == i %}
-                            <span class="btn-primary" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9rem;">{{ i }}</span>
-                        {% else %}
-                            <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
-                                {{ i }}
-                            </a>
-                        {% endif %}
+                    {% if page_obj.number == i %}
+                    <span class="btn-primary" style="padding: 0.5rem 1rem; width: auto; font-size: 0.9rem;">{{ i }}</span>
+                    {% else %}
+                    <a href="?page={{ i }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}"
+                        class="btn-secondary" style="padding: 0.5rem 1rem;">{{ i }}</a>
+                    {% endif %}
                     {% endfor %}
 
                     {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}" class="btn-secondary" style="padding: 0.5rem 1rem;">
-                            Next <i class="fa-solid fa-chevron-right"></i>
-                        </a>
+                    <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if location_filter %}&location={{ location_filter }}{% endif %}{% if date_filter %}&date={{ date_filter }}{% endif %}{% if category_filter %}&category={{ category_filter }}{% endif %}{% if event_type_filter %}&event_type={{ event_type_filter }}{% endif %}"
+                        class="btn-secondary" style="padding: 0.5rem 1rem;">
+                        Next <i class="fa-solid fa-chevron-right"></i>
+                    </a>
                     {% endif %}
                 </div>
-            {% endif %}
-        {% else %}
-            <div class="glass-card no-events">
-                <i class="fa-solid fa-calendar-xmark"></i>
-                <h3>No Events Matching Filters</h3>
-                <p>We couldn't find any approved events matching your selected category or criteria. Try resetting filters or hosting an event yourself!</p>
-                {% if request.user.is_authenticated %}
-                    <a href="{% url 'create_event' %}" class="btn-create" style="display: inline-flex; justify-content: center;">
-                        <i class="fa-solid fa-plus"></i> Host Event
+                {% endif %}
+
+                {% else %}
+                <div class="glass-card no-events">
+                    <i class="fa-solid fa-calendar-xmark"></i>
+                    <h3>No Events Matching Your Filters</h3>
+                    <p>We couldn't find any approved events for those criteria. Try resetting filters or hosting one yourself!</p>
+                    {% if request.user.is_authenticated %}
+                    <a href="{% url 'create_event' %}" class="btn-create">
+                        <i class="fa-solid fa-plus"></i> Host an Event
                     </a>
+                    {% endif %}
+                </div>
                 {% endif %}
             </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- ─────────────────────────────────────────────────────────
+     6. CTA BANNER
+───────────────────────────────────────────────────────── -->
+<section class="cta-band">
+    <div class="lp-inner">
+        <h2 class="cta-band-h reveal">Ready to Host Your Next Event?</h2>
+        <p class="cta-band-sub reveal" style="transition-delay:0.1s;">Submit your event for review — it takes less than 2 minutes.</p>
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'create_event' %}" class="cta-band-btn reveal" style="transition-delay:0.2s;">
+            <i class="fa-solid fa-calendar-plus"></i> Host an Event
+        </a>
+        {% else %}
+        <a href="{% url 'register' %}" class="cta-band-btn reveal" style="transition-delay:0.2s;">
+            <i class="fa-solid fa-user-plus"></i> Create Free Account
+        </a>
         {% endif %}
     </div>
-</div>
+</section>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const countdownEl = document.getElementById('countdown-timer');
-        if (!countdownEl) return;
-        
-        const targetDateStr = countdownEl.getAttribute('data-event-date');
-        if (!targetDateStr) return;
-        
-        const targetDate = new Date(targetDateStr).getTime();
-        
-        function updateCountdown() {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-            
-            if (distance < 0) {
-                document.getElementById('cd-days').innerText = '00';
-                document.getElementById('cd-hours').innerText = '00';
-                document.getElementById('cd-minutes').innerText = '00';
-                document.getElementById('cd-seconds').innerText = '00';
-                return;
-            }
-            
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            
-            document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
-            document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
-            document.getElementById('cd-minutes').innerText = String(minutes).padStart(2, '0');
-            document.getElementById('cd-seconds').innerText = String(seconds).padStart(2, '0');
-        }
-        
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-    });
-</script>
 {% endblock %}
 
+{% block extra_scripts %}
+<script>
+/* Scroll-reveal observer */
+(function () {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('visible');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.10 });
+    els.forEach(el => io.observe(el));
+})();
+</script>
+{% endblock %}
