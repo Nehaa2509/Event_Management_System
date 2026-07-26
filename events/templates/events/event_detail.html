@@ -269,31 +269,37 @@
         {% endif %}
 
         <!-- Digital Ticket Pass Card if Registered -->
-        <div id="ticket-pass-card" style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(217, 70, 239, 0.15) 100%); border: 1px dashed rgba(139, 92, 246, 0.4); border-radius: 16px; {% if not already_registered %}display: none;{% endif %}">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <div id="ticket-pass-card" style="margin: 2rem 0; padding: 1.5rem; background: linear-gradient(135deg, rgba(162, 28, 175, 0.25) 0%, rgba(219, 39, 119, 0.25) 50%, rgba(249, 115, 22, 0.25) 100%); border: 1px dashed rgba(236, 72, 153, 0.5); border-radius: 16px; box-shadow: 0 0 30px rgba(219, 39, 119, 0.25); {% if not already_registered %}display: none;{% endif %}">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 1rem; margin-bottom: 1rem;">
                 <div>
-                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #d946ef; font-weight: 700;">Verified Admission Pass</span>
-                    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary);">Wiwi Digital Ticket</h3>
+                    <span style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: #f43f5e; font-weight: 700;">Verified Admission Pass</span>
+                    <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin: 0.2rem 0 0;">Wiwi Digital Ticket</h3>
                 </div>
                 <div style="text-align: right;">
-                    <i class="fa-solid fa-qrcode" style="font-size: 2.2rem; color: #8b5cf6;"></i>
+                    <i class="fa-solid fa-qrcode" style="font-size: 2.2rem; color: #ec4899; filter: drop-shadow(0 0 10px rgba(236, 72, 153, 0.6));"></i>
                 </div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.2rem;">
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Ticket Code</span>
-                    <strong id="ticket-code-display" style="font-family: monospace; font-size: 1.1rem; color: #10b981;">
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Ticket Code</span>
+                    <strong id="ticket-code-display" style="font-family: 'Courier New', monospace; font-size: 1.1rem; color: #fbbf24; background: rgba(251, 191, 36, 0.12); padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid rgba(251, 191, 36, 0.35); box-shadow: 0 0 12px rgba(251, 191, 36, 0.2); display: inline-block;">
                         {% if registration %}{{ registration.ticket_code }}{% else %}GENERATING...{% endif %}
                     </strong>
                 </div>
                 <div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block;">Pass Holder</span>
-                    <strong style="color: var(--text-primary); text-transform: uppercase;">{{ request.user.username|upper }}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem;">Pass Holder</span>
+                    <strong style="color: var(--text-primary); text-transform: uppercase; font-size: 1rem;">{{ request.user.username|upper }}</strong>
                 </div>
             </div>
-            <button onclick="window.print()" class="btn-secondary" style="margin-top: 1.2rem; width: 100%; font-size: 0.9rem; padding: 0.6rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                <i class="fa-solid fa-print"></i> Print / Download Ticket Pass
-            </button>
+            {% if registration %}
+            <a href="{% url 'view_ticket' registration.id %}" id="view-full-ticket-btn" class="btn-primary" style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
+                <i class="fa-solid fa-ticket"></i> View Full Printable Ticket Pass
+            </a>
+            {% else %}
+            <a href="#" id="view-full-ticket-btn" class="btn-primary" style="background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%); width: 100%; font-size: 0.95rem; padding: 0.75rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(219, 39, 119, 0.35);">
+                <i class="fa-solid fa-ticket"></i> View Full Printable Ticket Pass
+            </a>
+            {% endif %}
         </div>
         
         <ul class="info-list">
