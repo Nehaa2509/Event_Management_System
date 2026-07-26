@@ -831,7 +831,7 @@ body > div.container {
                 <div class="event-card" style="min-width: 340px; scroll-snap-align: start; flex: 0 0 auto;">
                     {% if event.image %}
                     <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
-                        <img src="{{ event.image.url }}" alt="{{ event.title }} banner" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <img src="{{ event.image.url }}" alt="{{ event.title }} banner" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.outerHTML='<div style=\'height: 150px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); display: flex; align-items: center; justify-content: center;\'><i class=\'fa-solid fa-calendar-star\' style=\'font-size: 2.2rem; color: #c7d2fe;\'></i></div>'">
                     </div>
                     {% else %}
                     <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
@@ -965,7 +965,7 @@ body > div.container {
                         {% if event.image %}
                         <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
                             <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
-                                style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                                style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.outerHTML='<div style=\'height: 150px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); display: flex; align-items: center; justify-content: center;\'><i class=\'fa-solid fa-calendar-star\' style=\'font-size: 2.2rem; color: #c7d2fe;\'></i></div>'">
                         </div>
                         {% else %}
                         <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
@@ -1148,7 +1148,7 @@ body > div.container {
         <div class="gallery-grid">
             {% for evt in gallery_events %}
             <a href="{% url 'event_detail' evt.pk %}" class="gallery-item reveal" style="transition-delay: 0.{{ forloop.counter0|default:1 }}s;">
-                <img src="{{ evt.image.url }}" alt="{{ evt.title }}" class="gallery-img" loading="lazy">
+                <img src="{{ evt.image.url }}" alt="{{ evt.title }}" class="gallery-img" loading="lazy" onerror="this.parentElement.style.display='none'">
                 <div class="gallery-overlay">
                     <div class="mkbadge" style="background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(4px);">{{ evt.get_category_display }}</div>
                     <div class="gallery-title">{{ evt.title }}</div>

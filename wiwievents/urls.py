@@ -13,6 +13,8 @@ urlpatterns = [
     path('', include('events.urls')),
 ]
 
-# Serve uploaded media files during development
-if settings.DEBUG:
+import os
+
+# Serve uploaded media files during development ONLY if Cloudinary is not configured
+if settings.DEBUG and not os.environ.get('CLOUDINARY_CLOUD_NAME'):
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
