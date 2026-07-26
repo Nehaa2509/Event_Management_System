@@ -133,8 +133,9 @@ def event_list(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
             
-    # Metrics analytics for hero banner
+    # Metrics analytics for hero banner & countdown
     all_approved = Event.objects.filter(is_approved=True)
+    next_event = all_approved.filter(date__gte=timezone.now()).order_by('date').first()
     total_events = all_approved.count()
     total_attendees = Registration.objects.filter(event__is_approved=True).count()
     virtual_count = all_approved.filter(event_type='VIRTUAL').count()
@@ -157,6 +158,7 @@ def event_list(request):
         'total_attendees': total_attendees,
         'virtual_count': virtual_count,
         'in_person_count': in_person_count,
+        'next_event': next_event,
     }
     return render(request, 'events/event_list.html', context)
 

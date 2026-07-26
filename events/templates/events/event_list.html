@@ -11,338 +11,393 @@
         align-items: start;
     }
     
+    /* Elkevent-style Hero Section */
     .hero-section {
-        background: linear-gradient(135deg, rgba(162, 28, 175, 0.15) 0%, rgba(219, 39, 119, 0.15) 50%, rgba(249, 115, 22, 0.15) 100%);
+        min-height: 70vh;
+        background: linear-gradient(135deg, rgba(10, 6, 20, 0.92) 0%, rgba(162, 28, 175, 0.45) 50%, rgba(10, 6, 20, 0.92) 100%),
+                    radial-gradient(circle at 10% 20%, rgba(219, 39, 119, 0.3) 0%, transparent 45%),
+                    radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.3) 0%, transparent 45%),
+                    radial-gradient(circle at 50% 50%, rgba(250, 204, 21, 0.15) 0%, transparent 50%);
         border: 1px solid var(--border-glass);
-        border-radius: 20px;
-        padding: 3rem 2rem;
-        margin-bottom: 2rem;
-        text-align: center;
+        border-radius: 24px;
+        padding: 4rem 3.5rem;
+        margin-bottom: 2.5rem;
         box-shadow: var(--card-shadow);
         position: relative;
         overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        text-align: left;
     }
-    
+
+    .hero-eyebrow {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--accent-cyan);
+        margin-bottom: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
     .hero-title {
-        font-size: 3rem;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 1.15;
+        color: #fff;
+        max-width: 850px;
+        margin-bottom: 1rem;
+        text-align: left;
+    }
+
+    .highlight-word {
+        position: relative;
+        display: inline-block;
         background: var(--accent-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 0.6rem;
+        background-clip: text;
     }
-    
-    .hero-subtitle {
+
+    .highlight-word::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 2px;
+        width: 100%;
+        height: 8px;
+        background: rgba(249, 115, 22, 0.45);
+        border-radius: 4px;
+        transform: rotate(-1.2deg);
+        z-index: -1;
+    }
+
+    .hero-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        font-size: 0.95rem;
         color: var(--text-secondary);
-        font-size: 1.15rem;
-        max-width: 650px;
-        margin: 0 auto 2rem auto;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
     }
 
-    /* Stats Grid */
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1rem;
-        max-width: 800px;
-        margin: 0 auto;
+    .hero-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
     }
 
-    .stat-card {
-        background: rgba(15, 23, 42, 0.6);
+    .hero-ctas {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+        margin-bottom: 2.5rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-btn-main {
+        padding: 0.85rem 2rem !important;
+        font-size: 1.05rem !important;
+        border-radius: 50px !important;
+        box-shadow: 0 8px 25px rgba(219, 39, 119, 0.4) !important;
+    }
+
+    .hero-btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .hero-btn-secondary:hover {
+        color: var(--accent-cyan);
+    }
+
+    .hero-btn-secondary .icon-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
         border: 1px solid var(--border-glass);
-        border-radius: 12px;
-        padding: 1rem;
-        text-align: center;
-        backdrop-filter: blur(8px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent-pink);
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
     }
 
-    .stat-val {
-        font-size: 1.8rem;
+    .hero-btn-secondary:hover .icon-circle {
+        background: var(--accent-gradient);
+        color: #fff;
+        box-shadow: 0 0 20px rgba(219, 39, 119, 0.5);
+        transform: scale(1.05);
+    }
+
+    /* Live Countdown Box */
+    .countdown-container {
+        width: 100%;
+        max-width: 680px;
+        background: rgba(24, 16, 38, 0.65);
+        border: 1px solid var(--border-glass);
+        border-radius: 18px;
+        padding: 1.2rem 1.8rem;
+        backdrop-filter: blur(14px);
+    }
+
+    .countdown-title {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .countdown-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .cd-block {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cd-val {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .cd-lbl {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-top: 0.3rem;
+        font-weight: 600;
+    }
+
+    /* "Join the Event" Section */
+    .join-section {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-glass);
+        border-radius: 20px;
+        padding: 3rem 2.5rem;
+        margin-bottom: 2.5rem;
+        box-shadow: var(--card-shadow);
+    }
+
+    .join-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2.5rem;
+        align-items: center;
+    }
+
+    .join-eyebrow {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--accent-pink);
+        margin-bottom: 0.5rem;
+    }
+
+    .join-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        line-height: 1.25;
+        margin-bottom: 1rem;
+    }
+
+    .join-desc {
+        color: var(--text-secondary);
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    .join-stats-card {
+        background: linear-gradient(135deg, rgba(162, 28, 175, 0.2) 0%, rgba(219, 39, 119, 0.2) 50%, rgba(249, 115, 22, 0.2) 100%);
+        border: 1px solid rgba(236, 72, 153, 0.3);
+        border-radius: 18px;
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .join-stat-num {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
         font-weight: 800;
         background: var(--accent-gradient);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
-    .stat-lbl {
-        font-size: 0.8rem;
+    .join-stat-label {
+        font-size: 0.85rem;
         color: var(--text-muted);
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        font-weight: 600;
         margin-top: 0.2rem;
     }
 
-    /* Filter Pills */
-    .filter-pills {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.6rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .pill-link {
-        padding: 0.5rem 1rem;
-        border-radius: 50px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--text-secondary);
-        background: rgba(255, 255, 255, 0.04);
-        border: 1px solid var(--border-glass);
-        transition: all 0.3s ease;
-    }
-
-    .pill-link:hover, .pill-link.active {
-        color: white;
-        background: rgba(219, 39, 119, 0.25);
-        border-color: var(--accent-pink);
-        box-shadow: 0 0 15px rgba(219, 39, 119, 0.3);
-    }
-    
-    /* Filters Sidebar */
-    .filter-sidebar {
-        position: sticky;
-        top: 90px;
-    }
-    
-    .sidebar-title {
-        font-size: 1.25rem;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border-bottom: 1px solid var(--border-glass);
-        padding-bottom: 0.75rem;
-    }
-    
-    /* Event Grid */
-    .event-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1.5rem;
-    }
-    
-    .event-card {
-        background: var(--bg-card);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--border-glass);
-        border-radius: 16px;
-        overflow: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        box-shadow: var(--card-shadow);
-    }
-    
-    .event-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(139, 92, 246, 0.4);
-        box-shadow: 0 12px 30px rgba(99, 102, 241, 0.15);
-    }
-    
-    .event-header {
-        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent);
-        padding: 1.5rem;
-        border-bottom: 1px solid var(--border-glass);
-    }
-
-    .badge-bar {
-        display: flex;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-        margin-bottom: 0.8rem;
-    }
-    
-    .event-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        padding: 0.25rem 0.6rem;
-        border-radius: 50px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-    
-    .badge-approved {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--success);
-        border: 1px solid rgba(16, 185, 129, 0.2);
-    }
-
-    .badge-category {
-        background: rgba(99, 102, 241, 0.15);
-        color: #8b5cf6;
-        border: 1px solid rgba(99, 102, 241, 0.3);
-    }
-
-    .badge-virtual {
-        background: rgba(217, 70, 239, 0.15);
-        color: #d946ef;
-        border: 1px solid rgba(217, 70, 239, 0.3);
-    }
-    
-    .event-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        line-height: 1.3;
-    }
-    
-    .event-body {
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        gap: 1rem;
-    }
-    
-    .event-desc {
-        color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.5;
-        flex-grow: 1;
-    }
-
-    .speaker-box {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid var(--border-glass);
-        border-radius: 10px;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
-    }
-
-    .speaker-avatar {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        background: var(--accent-gradient);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 700;
-        font-size: 0.85rem;
-    }
-    
-    .event-meta {
-        display: flex;
-        flex-direction: column;
-        gap: 0.6rem;
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        border-top: 1px solid var(--border-glass);
-        padding-top: 1rem;
-    }
-    
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-    }
-    
-    .meta-item i {
-        color: #8b5cf6;
-        width: 16px;
-    }
-    
-    .event-footer {
-        padding: 1.5rem;
-        border-top: 1px solid var(--border-glass);
-        background: rgba(255, 255, 255, 0.01);
-    }
-    
-    .capacity-bar-container {
-        width: 100%;
-        height: 6px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 10px;
-        margin-top: 0.5rem;
-        overflow: hidden;
-    }
-    
-    .capacity-bar {
-        height: 100%;
-        background: var(--accent-gradient);
-        border-radius: 10px;
-        transition: width 0.5s ease;
-    }
-    
-    .capacity-text {
-        display: flex;
-        justify-content: space-between;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
-    }
-    
-    .no-events {
-        text-align: center;
-        padding: 4rem 2rem;
-    }
-    
-    .no-events i {
-        font-size: 4rem;
-        background: var(--accent-gradient);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1.5rem;
-    }
-    
-    .no-events h3 {
-        font-size: 1.8rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .no-events p {
-        color: var(--text-secondary);
-        margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 992px) {
-        .events-layout {
-            grid-template-columns: 1fr;
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 2.5rem 1.5rem;
+            min-height: auto;
+            align-items: center;
+            text-align: center;
         }
-        .filter-sidebar {
-            position: relative;
-            top: 0;
-            margin-bottom: 2rem;
+        .hero-title {
+            text-align: center;
+        }
+        .hero-meta-row {
+            justify-content: center;
+        }
+        .hero-ctas {
+            justify-content: center;
+        }
+        .countdown-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.2rem;
+        }
+        .join-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
         }
     }
 </style>
 {% endblock %}
 
 {% block content %}
+<!-- ── Elkevent-style Hero Section ── -->
 <div class="hero-section">
-    <h1 class="hero-title">Discover Exceptional Events</h1>
-    <p class="hero-subtitle">Connect with industry leaders at premier tech summits, hands-on coding workshops, and virtual keynotes worldwide.</p>
+    <div class="hero-eyebrow">
+        <i class="fa-solid fa-sparkles"></i> ARE YOU READY TO <span style="color: var(--accent-pink);">ATTEND?</span>
+    </div>
     
-    <!-- Hero Analytics Counter -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-val">{{ total_events }}</div>
-            <div class="stat-lbl">Active Events</div>
+    <h1 class="hero-title">
+        Discover Exceptional <span class="highlight-word">Events</span>
+    </h1>
+
+    <div class="hero-meta-row">
+        {% if next_event %}
+            <span class="hero-meta-item">
+                <i class="fa-solid fa-location-dot" style="color: var(--accent-cyan);"></i> {{ next_event.location }}
+            </span>
+            <span class="hero-meta-item">
+                <i class="fa-solid fa-calendar-days" style="color: var(--accent-pink);"></i> {{ next_event.date|date:"F j, Y — g:i A" }}
+            </span>
+        {% else %}
+            <span class="hero-meta-item">
+                <i class="fa-solid fa-earth-americas" style="color: var(--accent-cyan);"></i> Events Worldwide
+            </span>
+            <span class="hero-meta-item">
+                <i class="fa-solid fa-fire" style="color: var(--accent-pink);"></i> New Events Added Weekly
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="hero-ctas">
+        <a href="#events-grid" class="btn-primary hero-btn-main">
+            <i class="fa-solid fa-compass"></i> Explore Events
+        </a>
+        <a href="#how-it-works" class="hero-btn-secondary">
+            <span class="icon-circle"><i class="fa-solid fa-ticket"></i></span> How It Works
+        </a>
+    </div>
+
+    <!-- Live Countdown Row -->
+    {% if next_event %}
+        <div class="countdown-container" id="countdown-timer" data-event-date="{{ next_event.date|date:'c' }}">
+            <div class="countdown-title">
+                <i class="fa-solid fa-stopwatch" style="color: var(--accent-pink);"></i> Next Upcoming Event Starts In:
+            </div>
+            <div class="countdown-grid">
+                <div class="cd-block">
+                    <div class="cd-val" id="cd-days" style="color: #db2777;">00</div>
+                    <div class="cd-lbl">Days</div>
+                </div>
+                <div class="cd-block">
+                    <div class="cd-val" id="cd-hours" style="color: #f97316;">00</div>
+                    <div class="cd-lbl">Hours</div>
+                </div>
+                <div class="cd-block">
+                    <div class="cd-val" id="cd-minutes" style="color: #facc15;">00</div>
+                    <div class="cd-lbl">Minutes</div>
+                </div>
+                <div class="cd-block">
+                    <div class="cd-val" id="cd-seconds" style="color: #a21caf;">00</div>
+                    <div class="cd-lbl">Seconds</div>
+                </div>
+            </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-val">{{ total_attendees }}</div>
-            <div class="stat-lbl">Tickets Issued</div>
+    {% else %}
+        <div class="countdown-container" style="text-align: center; color: var(--text-secondary);">
+            <i class="fa-solid fa-calendar-plus" style="color: var(--accent-pink); font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+            No upcoming events scheduled yet — 
+            {% if user.is_authenticated %}
+                <a href="{% url 'create_event' %}" style="color: var(--accent-cyan); font-weight: 700;">Host the first one!</a>
+            {% else %}
+                <a href="{% url 'login' %}" style="color: var(--accent-cyan); font-weight: 700;">Log in to host an event!</a>
+            {% endif %}
         </div>
-        <div class="stat-card">
-            <div class="stat-val">{{ virtual_count }}</div>
-            <div class="stat-lbl">Virtual / Online</div>
+    {% endif %}
+</div>
+
+<!-- ── Join The Event Info Section ── -->
+<div class="join-section" id="how-it-works">
+    <div class="join-grid">
+        <div>
+            <div class="join-eyebrow">JOIN THE EVENT</div>
+            <h2 class="join-title">We Create <span class="highlight-word">Memorable</span> Experiences</h2>
+            <p class="join-desc">
+                Wiwi Events connects passionate tech communities, industry leaders, and creators through premier tech summits, hands-on coding workshops, and interactive keynotes worldwide.
+            </p>
+            <p class="join-desc" style="margin-top: 0.8rem;">
+                Whether you're organizing an international summit or looking to register for your next learning milestone, our platform provides instant e-tickets, verified QR-code entry passes, and real-time seat management.
+            </p>
         </div>
-        <div class="stat-card">
-            <div class="stat-val">{{ in_person_count }}</div>
-            <div class="stat-lbl">In-Person Gatherings</div>
+        <div class="join-stats-card">
+            <div>
+                <div class="join-stat-num">{{ total_attendees }}</div>
+                <div class="join-stat-label">Attendees Welcomed</div>
+            </div>
+            <div>
+                <div class="join-stat-num">{{ total_events }}</div>
+                <div class="join-stat-label">Events Hosted</div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="events-layout">
+<div class="events-layout" id="events-grid">
     <!-- Filters Sidebar -->
     <div class="filter-sidebar glass-card">
         <h3 class="sidebar-title"><i class="fa-solid fa-sliders"></i> Filter & Search</h3>
@@ -537,5 +592,43 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const countdownEl = document.getElementById('countdown-timer');
+        if (!countdownEl) return;
+        
+        const targetDateStr = countdownEl.getAttribute('data-event-date');
+        if (!targetDateStr) return;
+        
+        const targetDate = new Date(targetDateStr).getTime();
+        
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+            
+            if (distance < 0) {
+                document.getElementById('cd-days').innerText = '00';
+                document.getElementById('cd-hours').innerText = '00';
+                document.getElementById('cd-minutes').innerText = '00';
+                document.getElementById('cd-seconds').innerText = '00';
+                return;
+            }
+            
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
+            document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('cd-minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('cd-seconds').innerText = String(seconds).padStart(2, '0');
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    });
+</script>
 {% endblock %}
 
