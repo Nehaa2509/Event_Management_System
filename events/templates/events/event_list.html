@@ -831,7 +831,10 @@ body > div.container {
                 <div class="event-card" style="min-width: 340px; scroll-snap-align: start; flex: 0 0 auto;">
                     {% if event.image %}
                     <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
-                        <img src="{{ event.image.url }}" alt="{{ event.title }} banner" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.outerHTML='<div style=\'height: 150px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); display: flex; align-items: center; justify-content: center;\'><i class=\'fa-solid fa-calendar-star\' style=\'font-size: 2.2rem; color: #c7d2fe;\'></i></div>'">
+                        <img src="{{ event.image.url }}" alt="{{ event.title }} banner" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="image-fallback" style="height: 100%; display: none; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); align-items: center; justify-content: center;">
+                            <i class="fa-solid fa-calendar-star" style="font-size: 2.2rem; color: #c7d2fe;"></i>
+                        </div>
                     </div>
                     {% else %}
                     <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
@@ -965,7 +968,10 @@ body > div.container {
                         {% if event.image %}
                         <div style="height: 150px; overflow: hidden; border-radius: 14px 14px 0 0;">
                             <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
-                                style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.outerHTML='<div style=\'height: 150px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); display: flex; align-items: center; justify-content: center;\'><i class=\'fa-solid fa-calendar-star\' style=\'font-size: 2.2rem; color: #c7d2fe;\'></i></div>'">
+                                style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="image-fallback" style="height: 100%; display: none; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); align-items: center; justify-content: center;">
+                                <i class="fa-solid fa-calendar-star" style="font-size: 2.2rem; color: #c7d2fe;"></i>
+                            </div>
                         </div>
                         {% else %}
                         <div style="height: 100px; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); border-radius: 14px 14px 0 0; display: flex; align-items: center; justify-content: center;">
@@ -990,19 +996,7 @@ body > div.container {
                         </div>
 
                         <div class="event-body">
-                            <p class="event-desc">{{ event.description|truncatewords:18 }}</p>
-
-                            {% if event.speaker_name %}
-                            <div class="speaker-box">
-                                <div class="speaker-avatar">{{ event.speaker_name|slice:":1"|upper }}</div>
-                                <div>
-                                    <div class="speaker-name">{{ event.speaker_name }}</div>
-                                    {% if event.speaker_role %}
-                                    <div class="speaker-role">{{ event.speaker_role }}</div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            {% endif %}
+                            <!-- Description and speaker removed for cleaner card view -->
 
                             <div class="event-meta">
                                 <div class="meta-item">
@@ -1148,10 +1142,13 @@ body > div.container {
         <div class="gallery-grid">
             {% for evt in gallery_events %}
             <a href="{% url 'event_detail' evt.pk %}" class="gallery-item reveal" style="transition-delay: 0.{{ forloop.counter0|default:1 }}s;">
-                <img src="{{ evt.image.url }}" alt="{{ evt.title }}" class="gallery-img" loading="lazy" onerror="this.parentElement.style.display='none'">
-                <div class="gallery-overlay">
-                    <div class="mkbadge" style="background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(4px);">{{ evt.get_category_display }}</div>
-                    <div class="gallery-title">{{ evt.title }}</div>
+                <img src="{{ evt.image.url }}" alt="{{ evt.title }}" class="gallery-img" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="image-fallback" style="height: 100%; width: 100%; display: none; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); align-items: center; justify-content: center; position: absolute; top: 0; left: 0;">
+                    <i class="fa-solid fa-calendar-star" style="font-size: 2.2rem; color: #c7d2fe;"></i>
+                </div>
+                <div class="gallery-overlay" style="display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; gap: 0.5rem; padding: 1.5rem;">
+                    <div class="mkbadge" style="background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(4px); padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">{{ evt.get_category_display }}</div>
+                    <div class="gallery-title" style="margin: 0; font-size: 1.1rem; font-weight: 600; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">{{ evt.title }}</div>
                 </div>
             </a>
             {% endfor %}
@@ -1237,10 +1234,11 @@ body > div.container {
                 const el = entry.target;
                 const target = +el.getAttribute('data-target');
                 const duration = 2000;
-                const start = performance.now();
+                let startTimestamp = null;
                 
                 const step = (timestamp) => {
-                    const progress = Math.min((timestamp - start) / duration, 1);
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                     const ease = 1 - Math.pow(1 - progress, 4);
                     const current = Math.floor(ease * target);
                     el.innerText = current;

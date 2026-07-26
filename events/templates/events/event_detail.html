@@ -240,7 +240,10 @@
         {% if event.image %}
         <div style="margin: 1rem 0 1.5rem; border-radius: 14px; overflow: hidden; max-height: 340px;">
             <img src="{{ event.image.url }}" alt="{{ event.title }} banner"
-                style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" onerror="this.outerHTML='<div style=\'height: 100%; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); display: flex; align-items: center; justify-content: center;\'><i class=\'fa-solid fa-calendar-star\' style=\'font-size: 5rem; color: #c7d2fe;\'></i></div>'">
+                style="width: 100%; height: 100%; object-fit: cover; opacity: 0.85;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="image-fallback" style="height: 100%; display: none; background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 50%, #ede9fe 100%); align-items: center; justify-content: center;">
+                <i class="fa-solid fa-calendar-star" style="font-size: 5rem; color: #c7d2fe;"></i>
+            </div>
         </div>
         {% else %}
         <div
