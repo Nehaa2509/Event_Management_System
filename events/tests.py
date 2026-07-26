@@ -260,6 +260,35 @@ class EventManagementRBACAndConcurrencyTests(TransactionTestCase):
         self.assertEqual(resp_page2.status_code, 200)
         self.assertEqual(len(resp_page2.context['events']), 3) # 3 items on page 2
 
+    def test_multi_ticket_booking_and_max_user_limit(self):
+        self.event.is_approved = True
+        self.event.capacity = 10
+        self.event.save()
+
+        self.client.login(username='normal_user2', password='userpassword2')
+        
+        # 1. Book 3 tickets
+        resp = self.client.post(reverse('register_for_event', args=[self.event.id]), {'quantity': 3})
+        self.assertEqual(resp.status_code, 201)
+        self.assertEqual(resp.json()['user_tickets'], 3)
+        self.assertEqual(resp.json()['slots_left'], 7)
+
+        # 2. Attempt to book 3 more tickets (3 + 3 = 6 > MAX_TICKETS_PER_USER 5) -> Should be rejected
+        resp2 = self.client.post(reverse('register_for_event', args=[self.event.id]), {'quantity': 3})
+        self.assertEqual(resp2.status_code, 400)
+        self.assertIn("Maximum limit is 5 tickets", resp2.json()['error'])
+
+        # 3. Book 2 more tickets (3 + 2 = 5 == MAX_TICKETS_PER_USER) -> Should succeed
+        resp3 = self.client.post(reverse('register_for_event', args=[self.event.id]), {'quantity': 2})
+        self.assertEqual(resp3.status_code, 200)
+        self.assertEqual(resp3.json()['user_tickets'], 5)
+        self.assertEqual(resp3.json()['slots_left'], 5)
+
+        # 4. Attempt to book 1 more ticket after reaching max limit 5 -> Rejected
+        resp4 = self.client.post(reverse('register_for_event', args=[self.event.id]), {'quantity': 1})
+        self.assertEqual(resp4.status_code, 400)
+        self.assertIn("reached the maximum limit", resp4.json()['error'])
+
 
 from rest_framework.test import APITestCase
 from rest_framework.authtoken.models import Token

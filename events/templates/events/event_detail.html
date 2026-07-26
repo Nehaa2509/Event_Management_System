@@ -402,37 +402,66 @@
 
         <!-- Registration Booking Block -->
         <div class="glass-card sidebar-block">
-            <h3 style="margin-bottom: 1.2rem; font-size: 1.25rem;">Event Capacity</h3>
+            <h3 style="margin-bottom: 1.2rem; font-size: 1.25rem;">Event Capacity & Booking</h3>
             
             <div class="registration-status">
                 <div class="slots-indicator">
-                    <span>Filled slots</span>
+                    <span>Filled seats</span>
                     <span><strong id="filled-count">{{ registrations_count }}</strong> / {{ event.capacity }}</span>
                 </div>
                 <div class="progress-bar-container">
                     <div id="progress-bar" class="progress-bar" style="width: {% widthratio registrations_count event.capacity 100 %}%"></div>
                 </div>
                 
-                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
-                    Remaining slots: <strong id="slots-left">{{ slots_left }}</strong>
+                <div style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Available seats: <strong id="slots-left" style="color: var(--accent-cyan);">{{ slots_left }}</strong></span>
+                    {% if user.is_authenticated and user_tickets > 0 %}
+                        <span id="user-held-tag" style="font-size: 0.8rem; color: var(--accent-pink); font-weight: 700;">Held: {{ user_tickets }}/5</span>
+                    {% endif %}
                 </div>
 
                 {% if not event.is_approved %}
                     <button class="btn-action btn-full" disabled>
                         <i class="fa-solid fa-ban"></i> Event Pending Approval
                     </button>
-                {% elif already_registered %}
-                    <button id="reg-btn" class="btn-action btn-registered" onclick="unregisterFromEvent({{ event.id }})">
-                        <i class="fa-solid fa-circle-check"></i> Registered (Click to Cancel)
-                    </button>
-                {% elif slots_left <= 0 %}
+                {% elif slots_left <= 0 and user_tickets <= 0 %}
                     <button id="reg-btn" class="btn-action btn-full" disabled>
                         <i class="fa-solid fa-circle-xmark"></i> Fully Booked!
                     </button>
                 {% else %}
-                    <button id="reg-btn" class="btn-action btn-create" onclick="registerForEvent({{ event.id }})">
-                        <i class="fa-solid fa-ticket"></i> Book My Ticket
-                    </button>
+                    {% if max_selectable > 0 %}
+                        <div style="margin-bottom: 1rem; background: rgba(24, 16, 38, 0.6); border: 1px solid var(--border-glass); border-radius: 12px; padding: 0.85rem 1rem;">
+                            <label for="ticket-quantity" style="display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem;">
+                                Select Ticket Quantity (Max 5 per user)
+                            </label>
+                            <div style="display: flex; align-items: center; gap: 0.8rem;">
+                                <select id="ticket-quantity" class="form-control" style="background: rgba(15, 23, 42, 0.85); color: var(--text-primary); border: 1px solid var(--border-glass); border-radius: 8px; padding: 0.45rem 0.8rem; font-size: 0.95rem; font-weight: 700; flex: 1;">
+                                    {% for i in "12345"|make_list %}
+                                        {% if forloop.counter <= max_selectable %}
+                                            <option value="{{ forloop.counter }}">{{ forloop.counter }} Ticket{% if forloop.counter > 1 %}s{% endif %}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                                <span style="font-size: 0.78rem; color: var(--text-muted);">
+                                    Max {{ max_selectable }} available
+                                </span>
+                            </div>
+                        </div>
+
+                        <button id="reg-btn" class="btn-action btn-create" onclick="registerForEvent({{ event.id }})">
+                            <i class="fa-solid fa-ticket"></i> Reserve Ticket(s)
+                        </button>
+                    {% else %}
+                        <div style="font-size: 0.88rem; color: var(--warning); font-weight: 600; margin-bottom: 0.8rem; text-align: center;">
+                            <i class="fa-solid fa-circle-info"></i> You reached the max limit of 5 tickets for this event.
+                        </div>
+                    {% endif %}
+
+                    {% if already_registered %}
+                        <button id="cancel-btn" class="btn-action" style="margin-top: 0.8rem; background: rgba(244, 63, 94, 0.12); color: var(--error); border: 1px solid rgba(244, 63, 94, 0.3);" onclick="unregisterFromEvent({{ event.id }})">
+                            <i class="fa-solid fa-circle-minus"></i> Cancel Booking
+                        </button>
+                    {% endif %}
                 {% endif %}
                 
                 <div id="status-toast" class="status-toast"></div>
@@ -465,35 +494,38 @@
     function registerForEvent(eventId) {
         const btn = document.getElementById('reg-btn');
         const toast = document.getElementById('status-toast');
+        const qtySelect = document.getElementById('ticket-quantity');
+        const quantity = qtySelect ? parseInt(qtySelect.value) : 1;
         const csrftoken = getCsrfToken();
         
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reserving ticket...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Reserving tickets...';
         
         fetch(`/event/${eventId}/register/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken,
-            }
+            },
+            body: new URLSearchParams({ 'quantity': quantity })
         })
         .then(response => response.json().then(data => ({ status: response.status, body: data })))
         .then(({ status, body }) => {
-            if (status === 201) {
+            if (status === 200 || status === 201) {
                 toast.style.display = 'flex';
                 toast.style.background = 'rgba(16, 185, 129, 0.15)';
                 toast.style.color = 'var(--success)';
                 toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
                 toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
                 
-                currentRegistrations += 1;
-                document.getElementById('filled-count').innerText = currentRegistrations;
-                const newSlots = Math.max(0, currentCapacity - currentRegistrations);
-                document.getElementById('slots-left').innerText = newSlots;
-                
-                const pct = Math.min(100, (currentRegistrations / currentCapacity) * 100);
-                document.getElementById('progress-bar').style.width = pct + '%';
-                
+                if (body.slots_left !== undefined) {
+                    document.getElementById('slots-left').innerText = body.slots_left;
+                    const filled = currentCapacity - body.slots_left;
+                    document.getElementById('filled-count').innerText = filled;
+                    const pct = Math.min(100, (filled / currentCapacity) * 100);
+                    document.getElementById('progress-bar').style.width = pct + '%';
+                }
+
                 // Show Digital Ticket Pass
                 const ticketCard = document.getElementById('ticket-pass-card');
                 if (ticketCard) {
@@ -503,28 +535,15 @@
                     }
                 }
 
-                btn.disabled = false;
-                btn.className = 'btn-action btn-registered';
-                btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered (Click to Cancel)';
-                btn.setAttribute('onclick', `unregisterFromEvent(${eventId})`);
+                setTimeout(() => { window.location.reload(); }, 1200);
             } else {
                 toast.style.display = 'flex';
                 toast.style.background = 'rgba(239, 68, 68, 0.15)';
                 toast.style.color = 'var(--error)';
                 toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
                 toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Registration failed');
-                
-                if (body.error && (body.error.includes("booked") || body.error.includes("Capacity"))) {
-                    btn.className = 'btn-action btn-full';
-                    btn.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Fully Booked!';
-                } else if (body.error && body.error.includes("already")) {
-                    btn.className = 'btn-action btn-registered';
-                    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered (Click to Cancel)';
-                    btn.setAttribute('onclick', `unregisterFromEvent(${eventId})`);
-                } else {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Book My Ticket';
-                }
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Reserve Ticket(s)';
             }
         })
         .catch(err => {
@@ -535,72 +554,67 @@
             toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
             toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
             btn.disabled = false;
-            btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Book My Ticket';
+            btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Reserve Ticket(s)';
         });
     }
 
     function unregisterFromEvent(eventId) {
-        if (!confirm('Are you sure you want to cancel your ticket for this event?')) return;
+        if (!confirm('Are you sure you want to cancel your ticket reservation for this event?')) return;
         
-        const btn = document.getElementById('reg-btn');
+        const btn = document.getElementById('cancel-btn') || document.getElementById('reg-btn');
         const toast = document.getElementById('status-toast');
         const csrftoken = getCsrfToken();
         
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling ticket...';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Cancelling reservation...';
+        }
         
         fetch(`/event/${eventId}/unregister/`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
                 'X-CSRFToken': csrftoken,
             }
         })
         .then(response => response.json().then(data => ({ status: response.status, body: data })))
         .then(({ status, body }) => {
             if (status === 200) {
-                toast.style.display = 'flex';
-                toast.style.background = 'rgba(16, 185, 129, 0.15)';
-                toast.style.color = 'var(--success)';
-                toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
-                toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
-                
-                currentRegistrations = Math.max(0, currentRegistrations - 1);
-                document.getElementById('filled-count').innerText = currentRegistrations;
-                const newSlots = Math.max(0, currentCapacity - currentRegistrations);
-                document.getElementById('slots-left').innerText = newSlots;
-                
-                const pct = Math.min(100, (currentRegistrations / currentCapacity) * 100);
-                document.getElementById('progress-bar').style.width = pct + '%';
-                
-                const ticketCard = document.getElementById('ticket-pass-card');
-                if (ticketCard) ticketCard.style.display = 'none';
-
-                btn.disabled = false;
-                btn.className = 'btn-action btn-create';
-                btn.innerHTML = '<i class="fa-solid fa-ticket"></i> Book My Ticket';
-                btn.setAttribute('onclick', `registerForEvent(${eventId})`);
+                if (toast) {
+                    toast.style.display = 'flex';
+                    toast.style.background = 'rgba(16, 185, 129, 0.15)';
+                    toast.style.color = 'var(--success)';
+                    toast.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                    toast.innerHTML = '<i class="fa-solid fa-circle-check"></i> ' + body.message;
+                }
+                setTimeout(() => { window.location.reload(); }, 1000);
             } else {
-                toast.style.display = 'flex';
-                toast.style.background = 'rgba(239, 68, 68, 0.15)';
-                toast.style.color = 'var(--error)';
-                toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-                toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Cancellation failed');
-                btn.disabled = false;
-                btn.className = 'btn-action btn-registered';
-                btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered (Click to Cancel)';
+                if (toast) {
+                    toast.style.display = 'flex';
+                    toast.style.background = 'rgba(239, 68, 68, 0.15)';
+                    toast.style.color = 'var(--error)';
+                    toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> ' + (body.error || 'Cancellation failed');
+                }
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Cancel Booking';
+                }
             }
         })
         .catch(err => {
             console.error('Error:', err);
-            toast.style.display = 'flex';
-            toast.style.background = 'rgba(239, 68, 68, 0.15)';
-            toast.style.color = 'var(--error)';
-            toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
-            toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
-            btn.disabled = false;
-            btn.className = 'btn-action btn-registered';
-            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Registered (Click to Cancel)';
+            if (toast) {
+                toast.style.display = 'flex';
+                toast.style.background = 'rgba(239, 68, 68, 0.15)';
+                toast.style.color = 'var(--error)';
+                toast.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                toast.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> A network error occurred. Please try again.';
+            }
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-circle-minus"></i> Cancel Booking';
+            }
         });
     }
 </script>
