@@ -17,5 +17,7 @@ urlpatterns = [
     path('event/<int:event_id>/reject/', views.reject_event_view, name='reject_event'),
     path('dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('registration/<int:registration_id>/ticket/', views.view_ticket, name='view_ticket'),
+    path('contact/', views.contact_inquiry, name='contact_inquiry'),
+    path('api/search-suggestions/', views.search_suggestions, name='search_suggestions'),
 ]
 
