@@ -1,38 +1,34 @@
 /*
- * Wiwi Events — Custom Django Admin Theme
- * Matches the public site's dark glassmorphism design.
+ * Wiwi Events — Custom Django Admin Theme (Light Corporate SaaS)
+ * Matches the public site's clean light SaaS design.
  * Loaded AFTER Django's own admin CSS via {% block extrastyle %} in base_site.html.
  */
 
 /* ─── Design Tokens ────────────────────────────────────────────────────────── */
 :root {
-    --bg-primary:        #0a0614;
-    --bg-secondary:      rgba(24, 16, 38, 0.75);
-    --bg-card:           rgba(24, 16, 38, 0.65);
-    --border-glass:      rgba(255, 255, 255, 0.1);
-    --border-glowing:    rgba(219, 39, 119, 0.4);
-    --accent-gradient:   linear-gradient(135deg, #a21caf 0%, #db2777 35%, #f97316 70%, #facc15 100%);
-    --accent-violet:     #a21caf;
-    --accent-cyan:       #f97316;
-    --accent-pink:       #db2777;
-    --text-primary:      #f8fafc;
-    --text-secondary:    #a78bda;
-    --text-muted:        #7c6a94;
-    --success:           #34d399;
-    --error:             #fb7185;
-    --warning:           #fbbf24;
-    --glow-shadow:       0 0 25px rgba(219, 39, 119, 0.35);
-    --card-shadow:       0 12px 40px 0 rgba(0, 0, 0, 0.5);
+    --bg-primary:        #f8fafc;
+    --bg-secondary:      #ffffff;
+    --bg-card:           #ffffff;
+    --border-glass:      #e2e8f0;
+    --border-glowing:    rgba(99, 102, 241, 0.35);
+    --accent-gradient:   linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #2563eb 100%);
+    --accent-violet:     #7c3aed;
+    --accent-cyan:       #2563eb;
+    --accent-pink:       #4f46e5;
+    --text-primary:      #0f172a;
+    --text-secondary:    #475569;
+    --text-muted:        #94a3b8;
+    --success:           #059669;
+    --error:             #dc2626;
+    --warning:           #d97706;
+    --glow-shadow:       0 4px 14px rgba(79, 70, 229, 0.25);
+    --card-shadow:       0 4px 24px rgba(15, 23, 42, 0.06);
 }
 
 /* ─── Base / Body ───────────────────────────────────────────────────────────── */
 html, body {
     background-color: var(--bg-primary) !important;
-    background-image:
-        radial-gradient(circle at 15% 15%, rgba(162, 28, 175, 0.18) 0%, transparent 45%),
-        radial-gradient(circle at 85% 75%, rgba(249, 115, 22, 0.18)  0%, transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(219, 39, 119, 0.12) 0%, transparent 60%) !important;
-    background-attachment: fixed !important;
+    background-image: none !important;
     color: var(--text-primary) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
@@ -49,14 +45,13 @@ h1, h2, h3, h4, h5, h6,
 }
 
 a { color: var(--accent-cyan) !important; }
-a:hover { color: #fb7185 !important; }
+a:hover { color: #1d4ed8 !important; }
 
 /* ─── Header / Navbar ───────────────────────────────────────────────────────── */
 #header {
-    background: rgba(10, 6, 20, 0.92) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
+    background: #ffffff !important;
     border-bottom: 1px solid var(--border-glass) !important;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
     padding: 0.9rem 2rem !important;
     display: flex !important;
     align-items: center !important;
@@ -93,13 +88,13 @@ a:hover { color: #fb7185 !important; }
 }
 
 #user-tools a:hover {
-    color: #38bdf8 !important;
+    color: #1d4ed8 !important;
     text-decoration: underline !important;
 }
 
 /* Django 6 Theme Toggle Button & User Tools Form Controls */
 #user-tools button, .theme-toggle, #theme-toggle {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: #f1f5f9 !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-glass) !important;
     border-radius: 20px !important;
@@ -115,16 +110,14 @@ a:hover { color: #fb7185 !important; }
 }
 
 #user-tools button:hover, .theme-toggle:hover, #theme-toggle:hover {
-    background: rgba(124, 58, 237, 0.2) !important;
-    border-color: var(--accent-violet) !important;
-    color: #fff !important;
+    background: #eef2ff !important;
+    border-color: #c7d2fe !important;
+    color: #4f46e5 !important;
 }
 
 /* ─── Breadcrumbs ───────────────────────────────────────────────────────────── */
 div.breadcrumbs {
-    background: rgba(15, 23, 42, 0.6) !important;
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    background: #f1f5f9 !important;
     border-bottom: 1px solid var(--border-glass) !important;
     color: var(--text-secondary) !important;
     padding: 0.75rem 2rem !important;
@@ -142,7 +135,7 @@ div.breadcrumbs a {
 }
 
 div.breadcrumbs a:hover {
-    color: #38bdf8 !important;
+    color: #1d4ed8 !important;
     text-decoration: underline !important;
 }
 
@@ -154,9 +147,7 @@ div.breadcrumbs a:hover {
 
 /* ─── Left Navigation Sidebar ───────────────────────────────────────────────── */
 nav#nav-sidebar, .nav-sidebar {
-    background: rgba(15, 23, 42, 0.55) !important;
-    backdrop-filter: blur(14px) !important;
-    -webkit-backdrop-filter: blur(14px) !important;
+    background: #ffffff !important;
     border-right: 1px solid var(--border-glass) !important;
 }
 
@@ -167,26 +158,24 @@ nav#nav-sidebar, .nav-sidebar {
 }
 
 .nav-sidebar a:hover {
-    background: rgba(124, 58, 237, 0.15) !important;
+    background: #f1f5f9 !important;
     color: var(--text-primary) !important;
     border-radius: 8px !important;
 }
 
-/* ─── Module / Glass Cards ──────────────────────────────────────────────────── */
+/* ─── Module / Cards ──────────────────────────────────────────────────────────── */
 .module, #changelist-filter, div.dashboard-module, .inline-related, .inline-group, .related-widget-wrapper {
     background: var(--bg-card) !important;
-    backdrop-filter: blur(16px) !important;
-    -webkit-backdrop-filter: blur(16px) !important;
     border: 1px solid var(--border-glass) !important;
-    border-radius: 16px !important;
+    border-radius: 12px !important;
     box-shadow: var(--card-shadow) !important;
     margin-bottom: 1.5rem !important;
     overflow: hidden !important;
 }
 
 .module h2, .module caption, .inline-group h2, #changelist-filter h2 {
-    background: linear-gradient(90deg, rgba(124, 58, 237, 0.3) 0%, transparent 100%) !important;
-    color: #c084fc !important;
+    background: #f8fafc !important;
+    color: #4f46e5 !important;
     border-left: 3px solid var(--accent-violet) !important;
     padding: 0.8rem 1.1rem !important;
     font-size: 0.9rem !important;
@@ -202,8 +191,8 @@ nav#nav-sidebar, .nav-sidebar {
 
 /* ─── Dashboard app list ─────────────────────────────────────────────────────── */
 .app-events th, .app-auth th {
-    background: rgba(124, 58, 237, 0.15) !important;
-    color: #c084fc !important;
+    background: #f8fafc !important;
+    color: #4f46e5 !important;
 }
 
 /* ─── Data Table ─────────────────────────────────────────────────────────────── */
@@ -214,8 +203,8 @@ table {
 }
 
 thead th {
-    background: rgba(255, 255, 255, 0.04) !important;
-    color: var(--text-muted) !important;
+    background: #f8fafc !important;
+    color: var(--text-secondary) !important;
     font-size: 0.78rem !important;
     text-transform: uppercase !important;
     letter-spacing: 0.07em !important;
@@ -225,7 +214,7 @@ thead th {
 }
 
 thead th a, thead th a:link, thead th a:visited {
-    color: var(--text-muted) !important;
+    color: var(--text-secondary) !important;
 }
 thead th.sorted a { color: var(--accent-cyan) !important; }
 
@@ -235,7 +224,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-    background: rgba(124, 58, 237, 0.09) !important;
+    background: #f8fafc !important;
 }
 
 tbody td, tbody th {
@@ -277,12 +266,12 @@ tbody td a:hover { text-decoration: underline !important; }
 }
 
 .paginator a:hover {
-    background: rgba(6, 182, 212, 0.15) !important;
+    background: #eef2ff !important;
 }
 
 .paginator .this-page {
-    background: rgba(124, 58, 237, 0.25) !important;
-    color: #c084fc !important;
+    background: #eef2ff !important;
+    color: #4f46e5 !important;
     border-radius: 8px !important;
     padding: 0.3rem 0.7rem !important;
     font-weight: 700 !important;
@@ -309,28 +298,28 @@ tbody td a:hover { text-decoration: underline !important; }
 }
 
 .button:hover, input[type="submit"]:hover, .submit-row input:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 0 32px rgba(124, 58, 237, 0.55) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.35) !important;
 }
 
 /* Delete / danger */
 .button.deletelink, a.deletelink, .deletelink-box a, .submit-row a.deletelink {
-    background: rgba(244, 63, 94, 0.12) !important;
+    background: #fef2f2 !important;
     color: var(--error) !important;
-    border: 1px solid rgba(244, 63, 94, 0.3) !important;
+    border: 1px solid #fecaca !important;
     box-shadow: none !important;
 }
 
 .button.deletelink:hover, a.deletelink:hover {
     background: var(--error) !important;
     color: #fff !important;
-    box-shadow: 0 0 20px rgba(244, 63, 94, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25) !important;
     transform: translateY(-1px) !important;
 }
 
 /* Default (cancel) button */
 .button.default, .submit-row input.default {
-    background: rgba(255, 255, 255, 0.06) !important;
+    background: #f1f5f9 !important;
     color: var(--text-primary) !important;
     border: 1px solid var(--border-glass) !important;
     box-shadow: none !important;
@@ -338,7 +327,7 @@ tbody td a:hover { text-decoration: underline !important; }
 
 /* ─── Submit Row ─────────────────────────────────────────────────────────────── */
 .submit-row {
-    background: rgba(15, 23, 42, 0.5) !important;
+    background: #f8fafc !important;
     border: 1px solid var(--border-glass) !important;
     border-radius: 12px !important;
     padding: 1rem 1.5rem !important;
@@ -355,9 +344,9 @@ ul.object-tools {
 }
 
 ul.object-tools li a {
-    background: rgba(124, 58, 237, 0.15) !important;
-    color: #c084fc !important;
-    border: 1px solid rgba(124, 58, 237, 0.3) !important;
+    background: #eef2ff !important;
+    color: #4f46e5 !important;
+    border: 1px solid #c7d2fe !important;
     border-radius: 8px !important;
     padding: 0.45rem 1rem !important;
     font-weight: 600 !important;
@@ -367,7 +356,7 @@ ul.object-tools li a {
 }
 
 ul.object-tools li a:hover {
-    background: rgba(124, 58, 237, 0.3) !important;
+    background: #4f46e5 !important;
     color: #fff !important;
 }
 
@@ -392,9 +381,9 @@ input[type="date"],
 input[type="time"],
 input[type="datetime-local"],
 select, textarea, .vTextField, .vDateField, .vTimeField, .vIntegerField {
-    background: rgba(15, 23, 42, 0.80) !important;
+    background: #ffffff !important;
     border: 1px solid var(--border-glass) !important;
-    border-radius: 10px !important;
+    border-radius: 8px !important;
     color: var(--text-primary) !important;
     padding: 0.65rem 0.9rem !important;
     font-size: 0.93rem !important;
@@ -404,13 +393,13 @@ select, textarea, .vTextField, .vDateField, .vTimeField, .vIntegerField {
 
 input:focus, select:focus, textarea:focus {
     border-color: var(--accent-violet) !important;
-    box-shadow: 0 0 14px rgba(124, 58, 237, 0.28) !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15) !important;
     outline: none !important;
-    background: rgba(15, 23, 42, 0.95) !important;
+    background: #ffffff !important;
 }
 
 select option {
-    background: #0f172a !important;
+    background: #ffffff !important;
     color: var(--text-primary) !important;
 }
 
@@ -425,7 +414,7 @@ select option {
 }
 
 #changelist-filter h2 {
-    background: linear-gradient(90deg, rgba(6, 182, 212, 0.2) 0%, transparent 100%) !important;
+    background: #f8fafc !important;
     color: var(--accent-cyan) !important;
     border-left-color: var(--accent-cyan) !important;
 }
@@ -448,7 +437,7 @@ select option {
 
 #changelist-filter li a, #changelist-filter a {
     display: block !important;
-    color: var(--text-muted) !important;
+    color: var(--text-secondary) !important;
     text-decoration: none !important;
     padding: 0.35rem 1rem !important;
     font-size: 0.9rem !important;
@@ -458,7 +447,7 @@ select option {
 #changelist-filter li.selected a,
 #changelist-filter li a:hover {
     color: var(--accent-cyan) !important;
-    background: rgba(6, 182, 212, 0.1) !important;
+    background: #eff6ff !important;
     font-weight: 600 !important;
 }
 
@@ -473,7 +462,7 @@ div.datetimeshortcuts a, .date-icon, .clock-icon {
 
 /* ─── Action Bar ─────────────────────────────────────────────────────────────── */
 .actions {
-    background: rgba(15, 23, 42, 0.5) !important;
+    background: #f8fafc !important;
     border: 1px solid var(--border-glass) !important;
     border-radius: 10px !important;
     padding: 0.6rem 1rem !important;
@@ -500,33 +489,32 @@ ul.messagelist li {
     align-items: center !important;
     gap: 0.6rem !important;
     border: 1px solid transparent !important;
-    backdrop-filter: blur(10px) !important;
     animation: slideIn 0.3s ease-out !important;
     font-size: 0.93rem !important;
 }
 
 ul.messagelist li.success {
-    background: rgba(16, 185, 129, 0.14) !important;
+    background: #ecfdf5 !important;
     color: var(--success) !important;
-    border-color: rgba(16, 185, 129, 0.3) !important;
+    border-color: #a7f3d0 !important;
 }
 
 ul.messagelist li.error {
-    background: rgba(244, 63, 94, 0.14) !important;
+    background: #fef2f2 !important;
     color: var(--error) !important;
-    border-color: rgba(244, 63, 94, 0.3) !important;
+    border-color: #fecaca !important;
 }
 
 ul.messagelist li.warning {
-    background: rgba(245, 158, 11, 0.14) !important;
+    background: #fffbeb !important;
     color: var(--warning) !important;
-    border-color: rgba(245, 158, 11, 0.3) !important;
+    border-color: #fde68a !important;
 }
 
 ul.messagelist li.info {
-    background: rgba(6, 182, 212, 0.14) !important;
+    background: #eff6ff !important;
     color: var(--accent-cyan) !important;
-    border-color: rgba(6, 182, 212, 0.3) !important;
+    border-color: #bfdbfe !important;
 }
 
 /* ─── Login Page ─────────────────────────────────────────────────────────────── */
@@ -545,10 +533,8 @@ body.login #container {
 
 body.login #content {
     background: var(--bg-card) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
     border: 1px solid var(--border-glass) !important;
-    border-radius: 18px !important;
+    border-radius: 14px !important;
     padding: 2.5rem !important;
     box-shadow: var(--card-shadow) !important;
 }
@@ -595,7 +581,7 @@ body.login #content-main {
     width: 100% !important;
     padding: 0.85rem !important;
     font-size: 1rem !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     justify-content: center !important;
 }
 
@@ -614,7 +600,7 @@ body.login #content-main {
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
     padding: 0.7rem 1rem !important;
-    background: rgba(255, 255, 255, 0.02) !important;
+    background: #f8fafc !important;
     border-bottom: 1px solid var(--border-glass) !important;
 }
 
@@ -625,15 +611,16 @@ body.login #content-main {
 
 /* ─── Calendar / Date Picker popup ──────────────────────────────────────────── */
 .calendarbox, .clockbox {
-    background: #0f172a !important;
+    background: #ffffff !important;
     border: 1px solid var(--border-glass) !important;
     border-radius: 12px !important;
     color: var(--text-primary) !important;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12) !important;
 }
 
 .calendar caption, .calendarbox h2 {
-    background: linear-gradient(90deg, rgba(124, 58, 237, 0.3) 0%, transparent) !important;
-    color: #c084fc !important;
+    background: #f8fafc !important;
+    color: #4f46e5 !important;
 }
 
 .calendar td a:hover {
@@ -644,7 +631,7 @@ body.login #content-main {
 
 /* ─── Related field autocomplete drop-down ───────────────────────────────────── */
 .select2-container--admin-autocomplete .select2-selection {
-    background: rgba(15, 23, 42, 0.8) !important;
+    background: #ffffff !important;
     border: 1px solid var(--border-glass) !important;
     border-radius: 10px !important;
     color: var(--text-primary) !important;
@@ -652,9 +639,9 @@ body.login #content-main {
 
 /* ─── Miscellaneous ──────────────────────────────────────────────────────────── */
 p.errornote {
-    background: rgba(244, 63, 94, 0.14) !important;
+    background: #fef2f2 !important;
     color: var(--error) !important;
-    border: 1px solid rgba(244, 63, 94, 0.3) !important;
+    border: 1px solid #fecaca !important;
     border-radius: 10px !important;
     padding: 0.8rem 1.1rem !important;
 }

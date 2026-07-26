@@ -48,7 +48,7 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
                 <div class="form-group">
                     <label for="category" class="form-label">Event Category</label>
-                    <select name="category" id="category" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                    <select name="category" id="category" class="form-control" style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass);" required>
                         {% for val, label in categories %}
                             <option value="{{ val }}" {% if event.category == val %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}
@@ -57,7 +57,7 @@
                 
                 <div class="form-group">
                     <label for="event_type" class="form-label">Venue Format</label>
-                    <select name="event_type" id="event_type" class="form-control" style="background: rgba(15, 23, 42, 0.6); color: var(--text-primary); border: 1px solid var(--border-glass);" required>
+                    <select name="event_type" id="event_type" class="form-control" style="background: #ffffff; color: var(--text-primary); border: 1px solid var(--border-glass);" required>
                         {% for val, label in event_types %}
                             <option value="{{ val }}" {% if event.event_type == val %}selected{% endif %}>{{ label }}</option>
                         {% endfor %}

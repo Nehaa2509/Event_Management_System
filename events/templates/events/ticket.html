@@ -422,6 +422,11 @@
                 </div>
 
                 <div class="ticket-field">
+                    <span class="ticket-label"><i class="fa-solid fa-layer-group"></i> Quantity</span>
+                    <span class="ticket-value" style="font-weight: 700; color: #fbbf24;">{{ registration.quantity }} Pass{% if registration.quantity > 1 %}es{% endif %}</span>
+                </div>
+
+                <div class="ticket-field">
                     <span class="ticket-label">Status</span>
                     <span class="ticket-status-badge">
                         <i class="fa-solid fa-circle-check"></i> Confirmed

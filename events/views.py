@@ -140,6 +140,7 @@ def event_list(request):
     total_attendees = Registration.objects.filter(event__is_approved=True).count()
     virtual_count = all_approved.filter(event_type='VIRTUAL').count()
     in_person_count = all_approved.filter(event_type='IN_PERSON').count()
+    active_organizers = all_approved.values('organizer').distinct().count()
     
     locations = all_approved.values_list('location', flat=True).distinct()
     categories = Event.CATEGORY_CHOICES
@@ -158,6 +159,7 @@ def event_list(request):
         'total_attendees': total_attendees,
         'virtual_count': virtual_count,
         'in_person_count': in_person_count,
+        'active_organizers': active_organizers,
         'next_event': next_event,
     }
     return render(request, 'events/event_list.html', context)
@@ -169,10 +171,14 @@ def event_detail(request, pk):
     if not event.is_approved and not request.user.is_staff and event.organizer != request.user:
         raise PermissionDenied("You do not have permission to view this pending event.")
         
-    registration = Registration.objects.filter(user=request.user, event=event).first()
+    registration = Registration.objects.filter(user=request.user, event=event).first() if request.user.is_authenticated else None
     already_registered = registration is not None
-    registrations_count = event.registrations.count()
-    slots_left = max(0, event.capacity - registrations_count)
+    user_tickets = registration.quantity if registration else 0
+    max_tickets_per_user = 5
+    max_addable_user = max(0, max_tickets_per_user - user_tickets)
+    slots_left = event.slots_left
+    max_selectable = min(max_addable_user, slots_left)
+    total_booked = event.total_booked_tickets
     
     attendees = []
     if request.user.is_staff or request.user == event.organizer:
@@ -182,7 +188,11 @@ def event_detail(request, pk):
         'event': event,
         'registration': registration,
         'already_registered': already_registered,
-        'registrations_count': registrations_count,
+        'user_tickets': user_tickets,
+        'max_tickets_per_user': max_tickets_per_user,
+        'max_addable_user': max_addable_user,
+        'max_selectable': max_selectable,
+        'registrations_count': total_booked,
         'slots_left': slots_left,
         'attendees': attendees,
     }
@@ -386,9 +396,24 @@ def register_for_event(request, event_id):
     if request.method != 'POST':
         return JsonResponse({"error": "Method not allowed"}, status=405)
 
+    quantity_raw = request.POST.get('quantity', 1)
     try:
-        reg = register_user_for_event(user, event_id)
-        return JsonResponse({"message": "Successfully registered!", "ticket_code": reg.ticket_code}, status=201)
+        quantity = int(quantity_raw)
+        if quantity < 1:
+            return JsonResponse({"error": "Ticket quantity must be at least 1."}, status=400)
+    except (ValueError, TypeError):
+        return JsonResponse({"error": "Quantity must be a valid positive integer."}, status=400)
+
+    try:
+        reg = register_user_for_event(user, event_id, quantity=quantity)
+        is_new = getattr(reg, 'is_new', False)
+        status_code = 201 if is_new else 200
+        return JsonResponse({
+            "message": f"Successfully reserved {quantity} ticket(s)! You now hold {reg.quantity} ticket(s) total.",
+            "ticket_code": reg.ticket_code,
+            "user_tickets": reg.quantity,
+            "slots_left": reg.event.slots_left
+        }, status=status_code)
     except RegistrationError as e:
         return JsonResponse({"error": e.message}, status=e.status_code)
     except Event.DoesNotExist:
