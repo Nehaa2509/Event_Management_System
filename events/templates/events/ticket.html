@@ -22,7 +22,7 @@
 
     /* Top gradient strip */
     .ticket-header {
-        background: var(--accent-gradient);
+        background: linear-gradient(135deg, #a21caf 0%, #db2777 35%, #f97316 70%, #facc15 100%);
         padding: 1.8rem 2rem 1.4rem;
         text-align: center;
         position: relative;
@@ -32,9 +32,10 @@
         font-family: 'Outfit', sans-serif;
         font-weight: 800;
         font-size: 1.3rem;
-        color: rgba(255, 255, 255, 0.85);
+        color: #fff;
         letter-spacing: 0.04em;
         text-decoration: none;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .ticket-event-name {
@@ -44,6 +45,7 @@
         color: #fff;
         margin: 0.6rem 0 0;
         line-height: 1.25;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     /* Tear-off dashed divider */
@@ -108,10 +110,11 @@
         font-family: 'Courier New', monospace;
         font-size: 1.2rem;
         font-weight: 700;
-        color: var(--accent-cyan);
+        color: #fbbf24;
         letter-spacing: 0.1em;
-        background: rgba(6, 182, 212, 0.1);
-        border: 1px solid rgba(6, 182, 212, 0.2);
+        background: rgba(251, 191, 36, 0.12);
+        border: 1px solid rgba(251, 191, 36, 0.35);
+        box-shadow: 0 0 16px rgba(251, 191, 36, 0.25);
         padding: 0.5rem 0.8rem;
         border-radius: 8px;
         display: inline-block;
@@ -138,10 +141,10 @@
 
     .qr-img {
         border-radius: 12px;
-        border: 2px solid rgba(124, 58, 237, 0.4);
+        border: 2px solid rgba(236, 72, 153, 0.5);
         padding: 6px;
         background: #060913;
-        box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+        box-shadow: 0 0 32px rgba(249, 115, 22, 0.35);
         width: 180px;
         height: 180px;
     }
@@ -150,9 +153,10 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--success);
-        border: 1px solid rgba(16, 185, 129, 0.3);
+        background: rgba(52, 211, 153, 0.15);
+        color: #34d399;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+        box-shadow: 0 0 14px rgba(52, 211, 153, 0.3);
         border-radius: 50px;
         padding: 0.35rem 1rem;
         font-size: 0.82rem;
@@ -165,6 +169,17 @@
         display: flex;
         gap: 0.8rem;
         flex-wrap: wrap;
+    }
+
+    .ticket-actions .btn-primary {
+        background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%);
+        transition: all 0.3s ease;
+    }
+
+    .ticket-actions .btn-primary:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 8px 24px rgba(219, 39, 119, 0.4);
+        transform: translateY(-2px);
     }
 
     /* ── Print styles ───────────────────────────────────────────────── */
@@ -205,7 +220,7 @@
         }
 
         .ticket-header {
-            background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%) !important;
+            background: linear-gradient(135deg, #a21caf 0%, #db2777 50%, #f97316 100%) !important;
             color: #fff !important;
             padding: 1.2rem 2rem !important;
             text-align: left !important;
@@ -218,12 +233,14 @@
         .ticket-header .ticket-logo {
             color: #fff !important;
             font-size: 1.1rem !important;
+            text-shadow: none !important;
         }
 
         .ticket-header .ticket-event-name {
             color: #fff !important;
             font-size: 1.4rem !important;
             margin: 0 !important;
+            text-shadow: none !important;
         }
 
         /* Hide horizontal divider in print layout */
@@ -294,17 +311,19 @@
         }
 
         .ticket-code-value {
-            color: #0284c7 !important;
-            border: 1px solid #0284c7 !important;
-            background: #f0f9ff !important;
+            color: #b45309 !important;
+            border: 1px solid #f59e0b !important;
+            background: #fffbeb !important;
+            box-shadow: none !important;
             font-size: 1.1rem !important;
             padding: 0.35rem 0.7rem !important;
         }
 
         .ticket-status-badge {
-            background: #d1fae5 !important;
+            background: #ecfdf5 !important;
             color: #059669 !important;
             border: 1px solid #10b981 !important;
+            box-shadow: none !important;
             padding: 0.25rem 0.75rem !important;
         }
 
@@ -331,7 +350,7 @@
         .qr-img {
             width: 140px !important;
             height: 140px !important;
-            border: 2px solid #7c3aed !important;
+            border: 2px solid #db2777 !important;
             box-shadow: none !important;
             background: #fff !important;
             padding: 4px !important;

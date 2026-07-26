@@ -463,7 +463,7 @@ def view_ticket(request, registration_id):
         qr.add_data(registration.ticket_code)
         qr.make(fit=True)
         qr_img = qr.make_image(
-            fill_color='#7c3aed',
+            fill_color='#db2777',
             back_color='#060913',
             image_factory=PilImage
         )
