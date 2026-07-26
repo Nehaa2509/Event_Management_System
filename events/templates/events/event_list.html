@@ -419,10 +419,12 @@
     }
     
     .event-title {
-        font-size: 1.4rem;
+        font-family: 'Outfit', sans-serif;
+        font-size: 1.35rem;
         font-weight: 700;
         color: var(--text-primary);
         line-height: 1.3;
+        margin-top: 0.3rem;
     }
     
     .event-body {
@@ -430,45 +432,60 @@
         display: flex;
         flex-direction: column;
         flex: 1;
-        gap: 1rem;
+        gap: 1.2rem;
     }
     
     .event-desc {
         color: var(--text-secondary);
-        font-size: 0.95rem;
-        line-height: 1.5;
+        font-size: 0.93rem;
+        line-height: 1.55;
         flex-grow: 1;
+        margin: 0;
     }
 
     .speaker-box {
         display: flex;
         align-items: center;
         gap: 0.8rem;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(24, 16, 38, 0.6);
         border: 1px solid var(--border-glass);
-        border-radius: 10px;
-        padding: 0.6rem 0.8rem;
-        font-size: 0.85rem;
+        border-radius: 12px;
+        padding: 0.65rem 0.9rem;
     }
 
     .speaker-avatar {
-        width: 32px;
-        height: 32px;
+        width: 36px;
+        height: 36px;
         border-radius: 50%;
         background: var(--accent-gradient);
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
-        font-weight: 700;
-        font-size: 0.85rem;
+        font-weight: 800;
+        font-size: 0.9rem;
+        flex-shrink: 0;
+    }
+
+    .speaker-name {
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 0.88rem;
+        line-height: 1.2;
+    }
+
+    .speaker-role {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        line-height: 1.2;
+        margin-top: 0.15rem;
     }
     
     .event-meta {
         display: flex;
         flex-direction: column;
-        gap: 0.6rem;
-        font-size: 0.9rem;
+        gap: 0.65rem;
+        font-size: 0.88rem;
         color: var(--text-secondary);
         border-top: 1px solid var(--border-glass);
         padding-top: 1rem;
@@ -477,16 +494,22 @@
     .meta-item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
+        gap: 0.65rem;
     }
     
     .meta-item i {
         color: var(--accent-cyan);
-        width: 16px;
+        width: 18px;
+        text-align: center;
+        font-size: 0.95rem;
+    }
+
+    .meta-item strong {
+        color: var(--text-primary);
     }
     
     .event-footer {
-        padding: 1.5rem;
+        padding: 1.2rem 1.5rem 1.5rem 1.5rem;
         border-top: 1px solid var(--border-glass);
         background: rgba(255, 255, 255, 0.01);
     }
@@ -494,9 +517,9 @@
     .capacity-bar-container {
         width: 100%;
         height: 6px;
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(255, 255, 255, 0.06);
         border-radius: 10px;
-        margin-top: 0.5rem;
+        margin-top: 0.6rem;
         overflow: hidden;
     }
     
@@ -510,9 +533,36 @@
     .capacity-text {
         display: flex;
         justify-content: space-between;
-        font-size: 0.8rem;
-        color: var(--text-muted);
-        margin-bottom: 0.5rem;
+        align-items: center;
+        font-size: 0.83rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.4rem;
+        font-weight: 500;
+    }
+
+    .capacity-text strong {
+        color: var(--text-primary);
+        font-weight: 700;
+    }
+
+    .slots-badge {
+        font-size: 0.76rem;
+        font-weight: 700;
+        padding: 0.2rem 0.65rem;
+        border-radius: 50px;
+        letter-spacing: 0.03em;
+    }
+
+    .slots-available {
+        background: rgba(249, 115, 22, 0.15);
+        color: var(--accent-cyan);
+        border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+
+    .slots-full {
+        background: rgba(251, 113, 133, 0.15);
+        color: var(--error);
+        border: 1px solid rgba(251, 113, 133, 0.3);
     }
     
     .no-events {
@@ -742,15 +792,13 @@
                                 <span class="event-badge badge-category">
                                     <i class="fa-solid fa-tag"></i> {{ event.get_category_display }}
                                 </span>
-                                <span class="event-badge badge-virtual">
-                                    {% if event.event_type == 'VIRTUAL' %}
-                                        <i class="fa-solid fa-video"></i> Virtual
-                                    {% elif event.event_type == 'HYBRID' %}
-                                        <i class="fa-solid fa-network-wired"></i> Hybrid
-                                    {% else %}
-                                        <i class="fa-solid fa-building"></i> In-Person
-                                    {% endif %}
-                                </span>
+                                {% if event.event_type == 'VIRTUAL' %}
+                                    <span class="event-badge badge-virtual"><i class="fa-solid fa-video"></i> Virtual</span>
+                                {% elif event.event_type == 'HYBRID' %}
+                                    <span class="event-badge badge-category"><i class="fa-solid fa-network-wired"></i> Hybrid</span>
+                                {% else %}
+                                    <span class="event-badge badge-in_person"><i class="fa-solid fa-building"></i> In-Person</span>
+                                {% endif %}
                             </div>
                             <h3 class="event-title">{{ event.title }}</h3>
                         </div>
@@ -764,9 +812,9 @@
                                         {{ event.speaker_name|slice:":1"|upper }}
                                     </div>
                                     <div>
-                                        <strong style="color: var(--text-primary);">{{ event.speaker_name }}</strong>
+                                        <div class="speaker-name">{{ event.speaker_name }}</div>
                                         {% if event.speaker_role %}
-                                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ event.speaker_role }}</div>
+                                            <div class="speaker-role">{{ event.speaker_role }}</div>
                                         {% endif %}
                                     </div>
                                 </div>
@@ -783,18 +831,18 @@
                                 </div>
                                 <div class="meta-item">
                                     <i class="fa-solid fa-user-tie"></i>
-                                    <span>Organizer: <strong style="text-transform: uppercase;">{{ event.organizer.username|upper }}</strong></span>
+                                    <span>Organizer: <strong>{{ event.organizer.username|upper }}</strong></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="event-footer">
                             <div class="capacity-text">
-                                <span>Seats Reserved: <strong>{{ event.registrations.count }}</strong> / {{ event.capacity }}</span>
+                                <span><i class="fa-solid fa-users" style="color: var(--accent-pink); margin-right: 0.35rem;"></i> Reserved: <strong>{{ event.registrations.count }}</strong> / {{ event.capacity }}</span>
                                 {% if event.registrations.count >= event.capacity %}
-                                    <span style="color: var(--error); font-weight: 600;">FULL</span>
+                                    <span class="slots-badge slots-full">FULL</span>
                                 {% else %}
-                                    <span>{{ event.slots_left }} left</span>
+                                    <span class="slots-badge slots-available">{{ event.slots_left }} left</span>
                                 {% endif %}
                             </div>
                             <div class="capacity-bar-container">
